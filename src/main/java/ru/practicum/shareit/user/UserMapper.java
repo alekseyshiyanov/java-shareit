@@ -8,6 +8,7 @@ public class UserMapper {
                 .name(user.getName())
                 .build();
     }
+
     public static User fromDto(UserDto userDto) {
         return User.builder()
                 .id(userDto.getId())

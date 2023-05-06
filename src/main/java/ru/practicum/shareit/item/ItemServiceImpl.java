@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class ItemServiceImpl implements ItemService{
+public class ItemServiceImpl implements ItemService {
 
     private final ItemInMemoryStorage itemStorage;
 

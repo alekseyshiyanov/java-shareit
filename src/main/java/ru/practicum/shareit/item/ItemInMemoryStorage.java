@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.user.UserInMemoryStorage;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -135,6 +134,7 @@ public class ItemInMemoryStorage {
                     "ID владельца не существует");
         }
     }
+
     private Integer getItemUID() {
         return ++itemUID;
     }
