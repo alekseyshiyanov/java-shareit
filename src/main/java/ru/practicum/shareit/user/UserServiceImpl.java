@@ -57,14 +57,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateUserId(Long uid) {
-        if (uid == null) {
-            log.error("Объект не может быть сохранен. Причина 'ID не должен быть null'");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ошибка обновления объекта. ID не должен быть null");
-        }
-
-        if (uid < 0L) {
-            log.error("Объект не может быть сохранен. Причина 'ID должен быть положительным числом'");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ошибка обновления объекта. ID должен быть положительным числом");
+        if (uid <= 0L) {
+            log.error("Объект не может быть сохранен. Причина 'ID должен быть положительным числом больше 0'");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ошибка обновления объекта. ID должен быть положительным числом больше 0");
         }
     }
 }
