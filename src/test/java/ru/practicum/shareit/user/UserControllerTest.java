@@ -56,12 +56,12 @@ class UserControllerTest {
 
         createUserTest();
 
-        String rUrl3 = url + "/3";
-        ResponseEntity<String> actualResponseEntity3 = restTemplate.exchange(rUrl3, HttpMethod.GET, null, String.class);
+        String rUrl = url + "/3";
+        ResponseEntity<String> actualResponseEntity = restTemplate.exchange(rUrl, HttpMethod.GET, null, String.class);
 
-        assertEquals(404, actualResponseEntity3.getStatusCodeValue());
+        assertEquals(404, actualResponseEntity.getStatusCodeValue());
 
-        String responseBody = actualResponseEntity3.getBody();
+        String responseBody = actualResponseEntity.getBody();
         assertNotNull(responseBody);
         assertTrue(responseBody.contains("Пользователь с ID = 3 не существует"));
     }
@@ -73,12 +73,12 @@ class UserControllerTest {
 
         createUserTest();
 
-        String rUrl3 = url + "/-1";
-        ResponseEntity<String> actualResponseEntity3 = restTemplate.exchange(rUrl3, HttpMethod.GET, null, String.class);
+        String rUrl = url + "/-1";
+        ResponseEntity<String> actualResponseEntity = restTemplate.exchange(rUrl, HttpMethod.GET, null, String.class);
 
-        assertEquals(400, actualResponseEntity3.getStatusCodeValue());
+        assertEquals(400, actualResponseEntity.getStatusCodeValue());
 
-        String responseBody = actualResponseEntity3.getBody();
+        String responseBody = actualResponseEntity.getBody();
         assertNotNull(responseBody);
         assertTrue(responseBody.contains("Ошибка обновления объекта. ID должен быть положительным числом больше 0"));
     }
@@ -90,12 +90,12 @@ class UserControllerTest {
 
         createUserTest();
 
-        String rUrl3 = url + "/0";
-        ResponseEntity<String> actualResponseEntity3 = restTemplate.exchange(rUrl3, HttpMethod.GET, null, String.class);
+        String rUrl = url + "/0";
+        ResponseEntity<String> actualResponseEntity = restTemplate.exchange(rUrl, HttpMethod.GET, null, String.class);
 
-        assertEquals(400, actualResponseEntity3.getStatusCodeValue());
+        assertEquals(400, actualResponseEntity.getStatusCodeValue());
 
-        String responseBody = actualResponseEntity3.getBody();
+        String responseBody = actualResponseEntity.getBody();
         assertNotNull(responseBody);
         assertTrue(responseBody.contains("Ошибка обновления объекта. ID должен быть положительным числом больше 0"));
     }
