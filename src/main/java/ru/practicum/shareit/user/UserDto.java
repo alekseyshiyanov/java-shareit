@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
-    private Integer id;
+    private Long id;
     private String name;
 
     @NotNull(message = "Проверьте правильность ввода адреса электронной почты: не может быть null")

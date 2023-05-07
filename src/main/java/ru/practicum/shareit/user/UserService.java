@@ -32,11 +32,11 @@ public class UserService {
         return UserMapper.toDto(userStorage.createUser(newUser));
     }
 
-    public void deleteUser(Integer userId) {
+    public void deleteUser(Long userId) {
         userStorage.deleteUser(userId);
     }
 
-    public UserDto updateUser(UserDto userDto, Integer userId) {
+    public UserDto updateUser(UserDto userDto, Long userId) {
         validateUserId(userId);
 
         User userForUpdate = UserMapper.fromDto(userDto);
@@ -44,14 +44,14 @@ public class UserService {
         return UserMapper.toDto(userStorage.updateUser(userForUpdate));
     }
 
-    public UserDto getUser(Integer userId) {
+    public UserDto getUser(Long userId) {
         validateUserId(userId);
 
         User user = userStorage.getUser(userId);
         return UserMapper.toDto(user);
     }
 
-    private void validateUserId(Integer uid) {
+    private void validateUserId(Long uid) {
         if (uid == null) {
             log.error("Объект не может быть сохранен. Причина 'ID не должен быть null'");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ошибка обновления объекта. ID не должен быть null");

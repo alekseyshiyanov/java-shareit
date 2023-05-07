@@ -13,8 +13,8 @@ import java.util.List;
 @Component
 public class UserInMemoryStorage {
 
-    private Integer userUID = 0;
-    private final HashMap<Integer, User> users = new HashMap<>();
+    private Long userUID = 0L;
+    private final HashMap<Long, User> users = new HashMap<>();
 
     public List<User> getUsersList() {
         log.info("Текущее количество пользователей: {}", users.size());
@@ -28,7 +28,7 @@ public class UserInMemoryStorage {
     }
 
     public User updateUser(User user) {
-        Integer uid = user.getId();
+        Long uid = user.getId();
 
         User oldUser = getUser(uid);
 
@@ -52,15 +52,15 @@ public class UserInMemoryStorage {
         return currentUser;
     }
 
-    public User getUser(Integer userId) {
+    public User getUser(Long userId) {
         return checkUser(userId);
     }
 
-    public Boolean userIsPresent(Integer userId) {
+    public Boolean userIsPresent(Long userId) {
         return users.containsKey(userId);
     }
 
-    public void deleteUser(Integer userId) {
+    public void deleteUser(Long userId) {
         if (users.remove(userId) == null) {
             log.error("Пользователь с ID = {} не существует", userId);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с ID = " + userId + " не существует");
@@ -68,7 +68,7 @@ public class UserInMemoryStorage {
     }
 
     private void addUser(User user) {
-        Integer uid = getUserUID();
+        Long uid = getUserUID();
 
         user.setId(uid);
         users.put(uid, user);
@@ -76,7 +76,7 @@ public class UserInMemoryStorage {
         log.info("Сохранен объект: {}", user);
     }
 
-    private User checkUser(Integer userId) {
+    private User checkUser(Long userId) {
         User user = users.get(userId);
         if (user == null) {
             log.error("Пользователь с ID = {} не существует", userId);
@@ -85,14 +85,14 @@ public class UserInMemoryStorage {
         return user;
     }
 
-    private void emailIsExist(String email, Integer uid) {
+    private void emailIsExist(String email, Long uid) {
         if (users.values().stream().anyMatch(u -> (u.getEmail().equals(email) && !u.getId().equals(uid)))) {
             log.error("Пользователь с таким email уже существует");
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Пользователь с таким email уже существует");
         }
     }
 
-    private Integer getUserUID() {
+    private Long getUserUID() {
         return ++userUID;
     }
 }
