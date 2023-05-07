@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 @Component
 public class ItemInMemoryStorage {
 
-    private Integer itemUID = 0;
-    private final HashMap<Integer, Item> items = new HashMap<>();
+    private Long itemUID = 0L;
+    private final HashMap<Long, Item> items = new HashMap<>();
     private final UserInMemoryStorage userStorage;
 
     @Autowired
@@ -29,12 +29,12 @@ public class ItemInMemoryStorage {
         return item;
     }
 
-    public Item getItem(Integer itemId) {
+    public Item getItem(Long itemId) {
         return checkItem(itemId);
     }
 
     public Item updateItem(Item item) {
-        Integer uid = item.getId();
+        Long uid = item.getId();
         Item oldItem = getItem(uid);
 
         if (!oldItem.getOwner().equals(item.getOwner())) {
@@ -65,7 +65,7 @@ public class ItemInMemoryStorage {
         return currentItem;
     }
 
-    public List<Item> getItemsByOwnerId(Integer ownerId) {
+    public List<Item> getItemsByOwnerId(Long ownerId) {
         validateOwnerId(ownerId);
 
         return items.values().stream()
@@ -76,7 +76,7 @@ public class ItemInMemoryStorage {
     private void addItem(Item item) {
         validateItem(item);
 
-        Integer uid = getItemUID();
+        Long uid = getItemUID();
         item.setId(uid);
         items.put(uid, item);
 
@@ -89,7 +89,7 @@ public class ItemInMemoryStorage {
                 .collect(Collectors.toList());
     }
 
-    private Item checkItem(Integer uid) {
+    private Item checkItem(Long uid) {
         Item item = items.get(uid);
         if (item == null) {
             log.error("Предмет с ID = {} не существует", uid);
@@ -127,7 +127,7 @@ public class ItemInMemoryStorage {
         validateOwnerId(item.getOwner());
     }
 
-    private void validateOwnerId(Integer ownerId) {
+    private void validateOwnerId(Long ownerId) {
         if (!userStorage.userIsPresent(ownerId)) {
             log.error("ID владельца не существует");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -135,7 +135,7 @@ public class ItemInMemoryStorage {
         }
     }
 
-    private Integer getItemUID() {
+    private Long getItemUID() {
         return ++itemUID;
     }
 }

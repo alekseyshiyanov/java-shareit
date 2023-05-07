@@ -20,7 +20,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto createItem(@Valid @RequestBody ItemDto itemDto,
-                              @RequestHeader(value = "X-Sharer-User-Id", required = false) Integer ownerId) {
+                              @RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
         log.info("Запрос на создание новой записи");
         return itemService.createItem(itemDto, ownerId);
     }
@@ -28,28 +28,28 @@ public class ItemController {
 
     @PatchMapping("/{id}")
     public ItemDto updateItem(@RequestBody ItemDto itemDto,
-                              @PathVariable("id") Integer itemId,
-                              @RequestHeader(value = "X-Sharer-User-Id", required = false) Integer ownerId) {
+                              @PathVariable("id") Long itemId,
+                              @RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
         log.info("Запрос на обновление текущей записи");
         return itemService.updateItem(itemDto, itemId, ownerId);
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItem(@PathVariable("id") Integer itemId,
-                           @RequestHeader(value = "X-Sharer-User-Id", required = false) Integer ownerId) {
+    public ItemDto getItem(@PathVariable("id") Long itemId,
+                           @RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
         log.info("Запрос на получение данных предмета с ID={}", itemId);
         return itemService.getItem(itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByOwnerId(@RequestHeader(value = "X-Sharer-User-Id", required = false) Integer ownerId) {
+    public List<ItemDto> getItemsByOwnerId(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
         log.info("Запрос на получение данных предметов пользователя с ID={}", ownerId);
         return itemService.getItemsByOwnerId(ownerId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItem(@RequestParam(name = "text") String searchString,
-                                    @RequestHeader(value = "X-Sharer-User-Id", required = false) Integer ownerId) {
+                                    @RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
         log.info("Запрос на поиск предметов со строкой поиска '{}'", searchString);
         return itemService.getSearchedItems(searchString);
     }

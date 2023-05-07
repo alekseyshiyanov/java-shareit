@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item {
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -18,7 +18,7 @@ public class Item {
 
     private Boolean available;
 
-    private Integer owner;
+    private Long owner;
 
     private Integer request;
 }

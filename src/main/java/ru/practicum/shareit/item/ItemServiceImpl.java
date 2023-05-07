@@ -22,7 +22,7 @@ public class ItemServiceImpl implements ItemService {
    }
 
     @Override
-    public ItemDto createItem(ItemDto itemDto, Integer ownerId) {
+    public ItemDto createItem(ItemDto itemDto, Long ownerId) {
         validateOwnerId(ownerId);
 
         Item newItem = ItemMapper.fromDto(itemDto);
@@ -31,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getItem(Integer itemId) {
+    public ItemDto getItem(Long itemId) {
         validateItemId(itemId);
 
         Item item = itemStorage.getItem(itemId);
@@ -39,7 +39,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(ItemDto itemDto, Integer itemId, Integer ownerId) {
+    public ItemDto updateItem(ItemDto itemDto, Long itemId, Long ownerId) {
         validateItemId(itemId);
         validateOwnerId(ownerId);
 
@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getItemsByOwnerId(Integer ownerId) {
+    public List<ItemDto> getItemsByOwnerId(Long ownerId) {
         validateOwnerId(ownerId);
 
         var itemList = itemStorage.getItemsByOwnerId(ownerId);
@@ -81,7 +81,7 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    private void validateOwnerId(Integer ownerId) {
+    private void validateOwnerId(Long ownerId) {
         if (ownerId == null) {
             log.error("ID владельца не может быть null");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -89,7 +89,7 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    private void validateItemId(Integer itemId) {
+    private void validateItemId(Long itemId) {
         if (itemId == null) {
             log.error("ID предмета не должен быть null");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
