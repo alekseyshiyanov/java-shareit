@@ -6,17 +6,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class UserDto implements Create, Update {
     private Long id;
     private String name;
 
-    @NotNull(message = "Проверьте правильность ввода адреса электронной почты: не может быть null")
-    @Email(message = "Проверьте правильность ввода адреса электронной почты")
+    @NotEmpty(groups = Create.class, message = "Проверьте правильность ввода адреса электронной почты: не может быть пустым или равен null")
+    @Email(groups = {Update.class, Create.class}, message = "Проверьте правильность ввода адреса электронной почты")
     private String email;
 }
