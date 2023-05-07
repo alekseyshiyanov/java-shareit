@@ -7,9 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @RestController
 @RequestMapping(path = "/users")
