@@ -84,8 +84,9 @@ public class ItemInMemoryStorage {
     }
 
     public List<Item> getSearchedItems(String searchString) {
+        final String searchStringLowerCase = searchString.toLowerCase();
         return items.values().stream()
-                .filter(i -> (i.getDescription().toLowerCase().contains(searchString.toLowerCase()) && (i.getAvailable().equals(true))))
+                .filter(i -> (i.getAvailable() && i.getDescription().toLowerCase().contains(searchStringLowerCase)))
                 .collect(Collectors.toList());
     }
 
