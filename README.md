@@ -1,2 +1,5 @@
 # java-shareit
-Template repository for Shareit project.
+
+### ER диаграмма
+
+![shareit-ERD.png](shareit-ERD.png)

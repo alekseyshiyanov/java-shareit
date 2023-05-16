@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.item;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class Item {
     private Long id;
+
     private String name;
-    private String email;
+
+    private String description;
+
+    private Boolean available;
+
+    private Long owner;
+
+    private Integer request;
 }
