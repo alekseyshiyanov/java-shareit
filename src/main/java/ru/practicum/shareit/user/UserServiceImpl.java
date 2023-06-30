@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,16 +14,16 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserInMemoryStorage userStorage;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(UserInMemoryStorage userStorage) {
-        this.userStorage = userStorage;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public List<UserDto> getUsersList() {
-        var usersList = userStorage.getUsersList();
+        var usersList = userRepository.findAll();
         return usersList.stream()
                 .map(UserMapper::toDto)
                 .collect(Collectors.toList());
@@ -31,12 +32,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         User newUser = UserMapper.fromDto(userDto);
-        return UserMapper.toDto(userStorage.createUser(newUser));
+        return UserMapper.toDto(userRepository.save(newUser));
     }
 
     @Override
     public void deleteUser(Long userId) {
-        userStorage.deleteUser(userId);
+        userRepository.deleteUserById(userId);
     }
 
     @Override
@@ -45,15 +46,23 @@ public class UserServiceImpl implements UserService {
 
         User userForUpdate = UserMapper.fromDto(userDto);
         userForUpdate.setId(userId);
-        return UserMapper.toDto(userStorage.updateUser(userForUpdate));
+
+        userRepository.updateUser(userForUpdate);
+        return UserMapper.toDto(userRepository.getReferenceById(userId));
     }
 
     @Override
     public UserDto getUser(Long userId) {
         validateUserId(userId);
 
-        User user = userStorage.getUser(userId);
-        return UserMapper.toDto(user);
+        User user = userRepository.getUserById(userId);
+
+        if (user != null) {
+            return UserMapper.toDto(user);
+        }
+
+        log.error("Пользователь с ID = {} не найден в базе данных", userId);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с ID = " + userId + " не найден в базе данных");
     }
 
     private void validateUserId(Long uid) {
