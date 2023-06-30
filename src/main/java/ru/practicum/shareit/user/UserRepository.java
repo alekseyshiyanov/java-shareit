@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    List<User> findByEmailContainingIgnoreCase(String emailSearch);
 
     @Transactional
     void deleteUserById(Long UserId);
