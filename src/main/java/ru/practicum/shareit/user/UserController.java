@@ -2,11 +2,15 @@ package ru.practicum.shareit.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.builders.ErrorMessage;
+import ru.practicum.shareit.exceptions.ApiErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,5 +67,11 @@ public class UserController {
         }
 
         return errorMap;
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> handleApiErrorException(ApiErrorException e) {
+        var errMsg = ErrorMessage.buildRestApiErrorResponse(e.getStatusCode(), e.getMessage());
+        return new ResponseEntity<>(errMsg, new HttpHeaders(), e.getStatusCode());
     }
 }

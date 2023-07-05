@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.exceptions.ApiErrorException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,20 +56,22 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.getUserById(userId);
 
-        if (user != null) {
-            return UserMapper.toDto(user);
+        if (user == null) {
+            sendErrorMessage(HttpStatus.NOT_FOUND,
+                    "Пользователь с ID = " + userId + " не найден в базе данных");
         }
-
-        log.error("Пользователь с ID = {} не найден в базе данных", userId);
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Пользователь с ID = " + userId + " не найден в базе данных");
+        return UserMapper.toDto(user);
     }
 
     private void validateUserId(Long uid) {
         if (uid <= 0L) {
-            log.error("Объект не может быть сохранен. Причина 'ID должен быть положительным числом больше 0'");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Ошибка обновления объекта. ID должен быть положительным числом больше 0");
+            sendErrorMessage(HttpStatus.NOT_FOUND,
+                    "Ошибка проверки userID. ID должен быть положительным числом больше 0");
         }
+    }
+
+    private void sendErrorMessage(HttpStatus httpStatus, String msg) {
+        log.error(msg);
+        throw new ApiErrorException(httpStatus, msg);
     }
 }
