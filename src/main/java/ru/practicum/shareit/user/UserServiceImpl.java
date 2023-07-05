@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     private void validateUserId(Long uid) {
         if (uid <= 0L) {
-            sendErrorMessage(HttpStatus.NOT_FOUND,
+            sendErrorMessage(HttpStatus.BAD_REQUEST,
                     "Ошибка проверки userID. ID должен быть положительным числом больше 0");
         }
     }
