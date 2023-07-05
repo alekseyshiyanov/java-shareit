@@ -36,12 +36,12 @@ CREATE TABLE IF NOT EXISTS public.Item (
 );
 
 CREATE TABLE IF NOT EXISTS public.Booking (
-                                                Booking_Id bigint NOT NULL,
-                                                Start_Time time(6) without time zone NOT NULL,
-                                                End_Time time(6) without time zone,
+                                                Booking_Id bigserial NOT NULL,
+                                                Start_Time timestamp without time zone NOT NULL,
+                                                End_Time timestamp without time zone,
                                                 Item_Id bigint NOT NULL,
                                                 Booker_Id bigint NOT NULL,
-                                                Status varchar(255) NOT NULL,
+                                                Status integer NOT NULL,
                                                 CONSTRAINT Booking_pkey PRIMARY KEY (Booking_Id),
                                                 FOREIGN KEY(Booker_Id)   REFERENCES public.Users (User_Id)
                                                 ON DELETE CASCADE
@@ -51,3 +51,17 @@ CREATE TABLE IF NOT EXISTS public.Booking (
                                                     ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS public.Comments (
+                                                Comments_Id bigserial NOT NULL,
+                                                Text varchar(255) NOT NULL,
+                                                Item_Id bigint NOT NULL,
+                                                Author_Id bigint NOT NULL,
+                                                Created timestamp without time zone NOT NULL,
+                                                CONSTRAINT Comments_pkey PRIMARY KEY (Comments_Id),
+                                                FOREIGN KEY(Author_Id)   REFERENCES public.Users (User_Id)
+                                                  ON DELETE CASCADE
+                                                  ON UPDATE CASCADE,
+                                                FOREIGN KEY(Item_Id)   REFERENCES public.Item (Item_Id)
+                                                  ON DELETE CASCADE
+                                                  ON UPDATE CASCADE
+);
