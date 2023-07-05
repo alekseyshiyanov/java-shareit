@@ -32,13 +32,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start desc")
     List<Booking> getAllBookingByUserInFuture(@Param("bookerId") Long bookerId, @Param("current") LocalDateTime current);
 
-    @Modifying(clearAutomatically = true)
-    @Query("select b " +
-            "from Booking b " +
-            "where b.booker.id = :bookerId " +
-            "and :current between b.start and b.end " +
-            "order by b.start asc")
-    List<Booking> getAllBookingByUserInCurrent(@Param("bookerId") Long bookerId, @Param("current") LocalDateTime current);
+    List<Booking> getAllByBooker_IdAndEndIsAfterAndStartBeforeOrderByStartDesc(Long bookerId, LocalDateTime current1, LocalDateTime current2);
 
     @Modifying(clearAutomatically = true)
     @Query("select b " +
