@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="booking", schema="public")
+@Table(name = "booking", schema = "public")
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,25 +19,25 @@ import java.time.LocalDateTime;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="Booking_Id")
+    @Column(name = "Booking_Id")
     private Long id;
 
-    @Column(name="Start_Time", nullable = false)
+    @Column(name = "Start_Time", nullable = false)
     private LocalDateTime start;
 
-    @Column(name="End_Time", nullable = false)
+    @Column(name = "End_Time", nullable = false)
     private LocalDateTime end;
 
     @OneToOne
-    @JoinColumn(name="Item_Id")
+    @JoinColumn(name = "Item_Id")
     private Item item;
 
     @OneToOne
-    @JoinColumn(name="Booker_Id")
+    @JoinColumn(name = "Booker_Id")
     private User booker;
 
     @Enumerated
-    @Column(name="Status", nullable = false)
+    @Column(name = "Status", nullable = false)
     private BookingStatus status;
 }
 

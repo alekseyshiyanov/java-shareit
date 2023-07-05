@@ -4,15 +4,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ru.practicum.shareit.booking.Booking;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Transactional
-    void deleteUserById(Long UserId);
+    void deleteUserById(Long userId);
 
     User getUserById(Long id);
 

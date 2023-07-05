@@ -35,9 +35,9 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto approvalBooking (@RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId,
-                                       @PathVariable("bookingId") Long bookingId,
-                                       @RequestParam("approved") Boolean approved) {
+    public BookingDto approvalBooking(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId,
+                                      @PathVariable("bookingId") Long bookingId,
+                                      @RequestParam("approved") Boolean approved) {
         log.info("Запрос на смену статуса бронирования с ID={} от пользователя с ID={}", bookingId, ownerId);
         return bookingService.approvalBooking(ownerId, bookingId, approved);
     }

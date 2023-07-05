@@ -24,6 +24,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemRepository  itemRepository;
     private final UserRepository userRepository;
+
     @Autowired
     public BookingServiceImpl(BookingRepository bookingRepository,
                               ItemRepository  itemRepository,
@@ -83,7 +84,7 @@ public class BookingServiceImpl implements BookingService {
         checkUser(userId);
         List<Booking> bookingList;
 
-        switch(checkState(state).name()) {
+        switch(checkState(state).name()){
             case "ALL":
                 bookingList = bookingRepository.getAllBookingByBooker_IdOrderByStartDesc(userId);
                 break;
@@ -116,7 +117,7 @@ public class BookingServiceImpl implements BookingService {
         checkUser(ownerId);
         List<Booking> bookingList;
 
-        switch(checkState(state).name()) {
+        switch(checkState(state).name()){
             case "ALL":
                 bookingList = bookingRepository.getAllBookingByOwner(ownerId);
                 break;

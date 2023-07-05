@@ -21,6 +21,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     void updateStatus(@Param("bookingId") Long bookingId, @Param("status") BookingStatus status);
 
     List<Booking> getAllBookingByBooker_IdOrderByStartDesc(Long userId);
+
     List<Booking> getAllBookingByBooker_IdAndStatusOrderByStartDesc(Long userId, BookingStatus status);
 
     @Modifying(clearAutomatically = true)

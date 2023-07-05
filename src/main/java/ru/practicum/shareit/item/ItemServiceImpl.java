@@ -91,7 +91,7 @@ public class ItemServiceImpl implements ItemService {
 
         List<OutItemDto> itemDtoList = new ArrayList<>();
 
-        for(Item item : itemList) {
+        for (Item item : itemList) {
             var lastBooking = itemRepository.getLastBooking(item.getId(), ownerId, LocalDateTime.now(),
                     BookingStatus.APPROVED, PageRequest.of(0,1));
             var nextBooking = itemRepository.getNextBooking(item.getId(), ownerId, LocalDateTime.now(),

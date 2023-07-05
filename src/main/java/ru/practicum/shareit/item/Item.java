@@ -9,29 +9,30 @@ import ru.practicum.shareit.user.User;
 import javax.persistence.*;
 
 @Entity
-@Table(name="item", schema="public")@Data
+@Table(name = "item", schema = "public")
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="item_Id")
+    @Column(name = "item_Id")
     private Long id;
 
-    @Column(name="name", nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name="description", nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name="available", nullable = false)
+    @Column(name = "available", nullable = false)
     private Boolean available;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
-    @JoinColumn(name="owner")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "owner")
     private User user;
 
-    @Column(name="request")
+    @Column(name = "request")
     private Integer request;
 }
