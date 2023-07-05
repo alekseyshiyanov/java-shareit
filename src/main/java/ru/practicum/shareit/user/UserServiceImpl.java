@@ -61,13 +61,15 @@ public class UserServiceImpl implements UserService {
         }
 
         log.error("Пользователь с ID = {} не найден в базе данных", userId);
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с ID = " + userId + " не найден в базе данных");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Пользователь с ID = " + userId + " не найден в базе данных");
     }
 
     private void validateUserId(Long uid) {
         if (uid <= 0L) {
             log.error("Объект не может быть сохранен. Причина 'ID должен быть положительным числом больше 0'");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ошибка обновления объекта. ID должен быть положительным числом больше 0");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Ошибка обновления объекта. ID должен быть положительным числом больше 0");
         }
     }
 }
