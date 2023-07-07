@@ -1,9 +1,7 @@
 package ru.practicum.shareit.booking;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
 public interface BookingService {
 
     BookingDto createBooking(InputBookingDto bookingDto, Long bookerId);

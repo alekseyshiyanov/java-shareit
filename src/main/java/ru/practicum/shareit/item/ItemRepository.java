@@ -9,23 +9,19 @@ import org.springframework.data.repository.query.Param;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingStatus;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    @Transactional
-    Item getItemById(Long id);
+    Optional<Item> getItemById(Long id);
 
-    @Transactional
     List<Item> getItemsByUser_IdOrderByIdAsc(@Param("ownerId") Long ownerId);
 
-    @Transactional
     List<Item> getItemsByDescriptionContainsIgnoreCaseAndAvailableIsTrue(@Param("searchString") String searchString);
 
-    @Modifying
-    @Transactional
+    @Modifying(clearAutomatically = true)
     @Query("update Item i " +
             "set i.name    = COALESCE(CAST(:#{#newItem.name}  as string), i.name), " +
             "i.description = COALESCE(CAST(:#{#newItem.description}  as string), i.description), " +
@@ -35,7 +31,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "where i.id    = :#{#newItem.id}")
     void updateItem(@Param("newItem") Item newItem);
 
-    @Transactional
     @Query("select b " +
             "from Booking b " +
             "where b.item.id = :itemId " +
@@ -50,7 +45,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
                                  @Param("status")BookingStatus status,
                                  Pageable pageable);
 
-    @Transactional
     @Query("select b " +
             "from Booking b " +
             "where b.item.id = :itemId " +

@@ -7,12 +7,13 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    Booking getBookingById(Long id);
+    Optional<Booking> getBookingById(Long id);
 
-    Booking getTopBookingByItem_IdAndBooker_IdAndEndBeforeOrderByEndDesc(Long itemId, Long bookerId, LocalDateTime current);
+    Optional<Booking> getTopBookingByItem_IdAndBooker_IdAndEndBeforeOrderByEndDesc(Long itemId, Long bookerId, LocalDateTime current);
 
     @Modifying(clearAutomatically = true)
     @Query("update Booking b " +
@@ -24,7 +25,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> getAllBookingByBooker_IdAndStatusOrderByStartDesc(Long userId, BookingStatus status);
 
-    @Modifying(clearAutomatically = true)
     @Query("select b " +
             "from Booking b " +
             "where b.booker.id = :bookerId " +
@@ -34,7 +34,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> getAllByBooker_IdAndEndIsAfterAndStartBeforeOrderByStartDesc(Long bookerId, LocalDateTime current1, LocalDateTime current2);
 
-    @Modifying(clearAutomatically = true)
     @Query("select b " +
             "from Booking b " +
             "where b.booker.id = :bookerId " +
@@ -42,14 +41,12 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start desc")
     List<Booking> getAllBookingByUserInPast(@Param("bookerId") Long bookerId, @Param("current") LocalDateTime current);
 
-    @Modifying(clearAutomatically = true)
     @Query("select b " +
             "from Booking b " +
             "where b.item.user.id = :ownerId " +
             "order by b.start desc")
     List<Booking> getAllBookingByOwner(@Param("ownerId") Long ownerId);
 
-    @Modifying(clearAutomatically = true)
     @Query("select b " +
             "from Booking b " +
             "where b.item.user.id = :ownerId " +
@@ -57,7 +54,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start desc")
     List<Booking> getAllBookingByOwnerInFuture(@Param("ownerId") Long ownerId, @Param("current") LocalDateTime current);
 
-    @Modifying(clearAutomatically = true)
     @Query("select b " +
             "from Booking b " +
             "where b.item.user.id = :ownerId " +
@@ -65,7 +61,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start desc")
     List<Booking> getAllBookingByOwnerInCurrent(@Param("ownerId") Long ownerId, @Param("current") LocalDateTime current);
 
-    @Modifying(clearAutomatically = true)
     @Query("select b " +
             "from Booking b " +
             "where b.item.user.id = :ownerId " +
@@ -73,7 +68,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "order by b.start desc")
     List<Booking> getAllBookingByOwnerInPast(@Param("ownerId") Long ownerId, @Param("current") LocalDateTime current);
 
-    @Modifying(clearAutomatically = true)
     @Query("select b " +
             "from Booking b " +
             "where b.item.user.id = :ownerId " +

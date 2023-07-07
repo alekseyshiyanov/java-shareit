@@ -1,23 +1,21 @@
 package ru.practicum.shareit.item;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "item", schema = "public")
-@Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_Id")
+    @Column(name = "item_id")
     private Long id;
 
     @Column(name = "name", nullable = false)

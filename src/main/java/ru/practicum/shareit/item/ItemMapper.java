@@ -6,6 +6,7 @@ import ru.practicum.shareit.comments.Comments;
 import ru.practicum.shareit.comments.CommentsMapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,15 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .request(item.getRequest())
                 .build();
+    }
+
+    public static List<ItemDto> toDto(List<Item> itemList) {
+        if (itemList == null) {
+            return Collections.emptyList();
+        }
+        return itemList.stream()
+                .map(ItemMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public static OutItemDto toDto(Item item, Booking lastBooking, Booking nextBooking, List<Comments> commentsList) {

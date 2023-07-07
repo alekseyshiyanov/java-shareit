@@ -5,17 +5,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import javax.transaction.Transactional;
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Transactional
     void deleteUserById(Long userId);
 
-    User getUserById(Long id);
+    Optional<User> getUserById(Long id);
 
     @Modifying(clearAutomatically = true)
-    @Transactional
     @Query("update User u " +
             "set u.name  = COALESCE(CAST(:#{#newUser.name}  as string), u.name ), " +
                 "u.email = COALESCE(CAST(:#{#newUser.email} as string), u.email)  " +

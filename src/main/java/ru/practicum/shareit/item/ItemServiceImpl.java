@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -11,28 +11,21 @@ import ru.practicum.shareit.exceptions.ApiErrorException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
+@Transactional
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final CommentsRepository commentsRepository;
-
-    @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository,
-                           UserRepository userRepository,
-                           CommentsRepository commentsRepository) {
-        this.itemRepository = itemRepository;
-        this.userRepository = userRepository;
-        this.commentsRepository = commentsRepository;
-   }
 
     @Override
     public ItemDto createItem(ItemDto itemDto, Long ownerId) {
@@ -50,11 +43,7 @@ public class ItemServiceImpl implements ItemService {
     public OutItemDto getItem(Long itemId, Long userId) {
         validateItemId(itemId);
 
-        Item item = itemRepository.getItemById(itemId);
-
-        if (item == null) {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Предмет с ID = " + itemId + " не найден в базе данных");
-        }
+        Item item = getItemById(itemId);
 
         var lastBooking = itemRepository.getLastBooking(itemId, userId, LocalDateTime.now(),
                 BookingStatus.APPROVED, PageRequest.of(0,1));
@@ -80,7 +69,7 @@ public class ItemServiceImpl implements ItemService {
 
         itemRepository.updateItem(itemForUpdate);
 
-        return ItemMapper.toDto(itemRepository.getItemById(itemId));
+        return ItemMapper.toDto(getItemById(itemId));
     }
 
     @Override
@@ -115,11 +104,7 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
 
-        var itemList = itemRepository.getItemsByDescriptionContainsIgnoreCaseAndAvailableIsTrue(searchString);
-
-        return itemList.stream()
-               .map(ItemMapper::toDto)
-               .collect(Collectors.toList());
+        return ItemMapper.toDto(itemRepository.getItemsByDescriptionContainsIgnoreCaseAndAvailableIsTrue(searchString));
     }
 
     private void validateSearchString(String searchString) {
@@ -161,13 +146,17 @@ public class ItemServiceImpl implements ItemService {
     private User getOwnerById(Long ownerId) {
         validateOwnerId(ownerId);
 
-        User user = userRepository.getUserById(ownerId);
-
-        if (user == null) {
+        return userRepository.getUserById(ownerId).orElseThrow(() -> {
             sendErrorMessage(HttpStatus.NOT_FOUND,"Пользователь с ID = " + ownerId + " не найден в базе данных");
-        }
+            return null;
+        });
+    }
 
-        return user;
+    private Item getItemById(Long itemId) {
+        return itemRepository.getItemById(itemId).orElseThrow(() -> {
+            sendErrorMessage(HttpStatus.NOT_FOUND, "Предмет с ID = " + itemId + " не найден в базе данных");
+            return null;
+        });
     }
 
     private void sendErrorMessage(HttpStatus httpStatus, String msg) {

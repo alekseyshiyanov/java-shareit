@@ -1,31 +1,25 @@
 package ru.practicum.shareit.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ApiErrorException;
 
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     @Override
     public List<UserDto> getUsersList() {
-        var usersList = userRepository.findAll();
-        return usersList.stream()
-                .map(UserMapper::toDto)
-                .collect(Collectors.toList());
+        return UserMapper.toDto(userRepository.findAll());
     }
 
     @Override
@@ -54,12 +48,11 @@ public class UserServiceImpl implements UserService {
     public UserDto getUser(Long userId) {
         validateUserId(userId);
 
-        User user = userRepository.getUserById(userId);
+        User user = userRepository.getUserById(userId).orElseThrow(() -> {
+            sendErrorMessage(HttpStatus.NOT_FOUND, "Пользователь с ID = " + userId + " не найден в базе данных");
+            return null;
+        });
 
-        if (user == null) {
-            sendErrorMessage(HttpStatus.NOT_FOUND,
-                    "Пользователь с ID = " + userId + " не найден в базе данных");
-        }
         return UserMapper.toDto(user);
     }
 

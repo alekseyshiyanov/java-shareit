@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,18 +14,12 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
     private final CommentsService commentsService;
-
-    @Autowired
-    public ItemController(ItemService itemService,
-                          CommentsService commentsService) {
-        this.itemService = itemService;
-        this.commentsService = commentsService;
-    }
 
     @PostMapping
     public ItemDto createItem(@Valid @RequestBody ItemDto itemDto,
@@ -69,11 +63,5 @@ public class ItemController {
                                     @RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
         log.info("Запрос на поиск предметов со строкой поиска '{}'", searchString);
         return itemService.getSearchedItems(searchString);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<Object> handleApiErrorException(ApiErrorException e) {
-        var errMsg = ErrorMessage.buildRestApiErrorResponse(e.getStatusCode(), e.getMessage());
-        return new ResponseEntity<>(errMsg, new HttpHeaders(), e.getStatusCode());
     }
 }
