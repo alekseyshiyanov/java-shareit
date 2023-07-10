@@ -1,42 +1,36 @@
 package ru.practicum.shareit.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.exceptions.ApiErrorException;
 
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
-    private final UserInMemoryStorage userStorage;
-
-    @Autowired
-    public UserServiceImpl(UserInMemoryStorage userStorage) {
-        this.userStorage = userStorage;
-    }
+    private final UserRepository userRepository;
 
     @Override
     public List<UserDto> getUsersList() {
-        var usersList = userStorage.getUsersList();
-        return usersList.stream()
-                .map(UserMapper::toDto)
-                .collect(Collectors.toList());
+        return UserMapper.toDto(userRepository.findAll());
     }
 
     @Override
     public UserDto createUser(UserDto userDto) {
         User newUser = UserMapper.fromDto(userDto);
-        return UserMapper.toDto(userStorage.createUser(newUser));
+        return UserMapper.toDto(userRepository.save(newUser));
     }
 
     @Override
     public void deleteUser(Long userId) {
-        userStorage.deleteUser(userId);
+        userRepository.deleteUserById(userId);
     }
 
     @Override
@@ -45,21 +39,32 @@ public class UserServiceImpl implements UserService {
 
         User userForUpdate = UserMapper.fromDto(userDto);
         userForUpdate.setId(userId);
-        return UserMapper.toDto(userStorage.updateUser(userForUpdate));
+
+        userRepository.updateUser(userForUpdate);
+        return UserMapper.toDto(userRepository.getReferenceById(userId));
     }
 
     @Override
     public UserDto getUser(Long userId) {
         validateUserId(userId);
 
-        User user = userStorage.getUser(userId);
+        User user = userRepository.getUserById(userId).orElseThrow(() -> {
+            sendErrorMessage(HttpStatus.NOT_FOUND, "Пользователь с ID = " + userId + " не найден в базе данных");
+            return null;
+        });
+
         return UserMapper.toDto(user);
     }
 
     private void validateUserId(Long uid) {
         if (uid <= 0L) {
-            log.error("Объект не может быть сохранен. Причина 'ID должен быть положительным числом больше 0'");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ошибка обновления объекта. ID должен быть положительным числом больше 0");
+            sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Ошибка проверки userID. ID должен быть положительным числом больше 0");
         }
+    }
+
+    private void sendErrorMessage(HttpStatus httpStatus, String msg) {
+        log.error(msg);
+        throw new ApiErrorException(httpStatus, msg);
     }
 }
