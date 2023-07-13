@@ -19,7 +19,13 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     List<Item> getItemsByUser_IdOrderByIdAsc(@Param("ownerId") Long ownerId);
 
-    List<Item> getItemsByDescriptionContainsIgnoreCaseAndAvailableIsTrue(@Param("searchString") String searchString);
+    @Query("select i " +
+            "from Item i " +
+            "where (lower(i.description) like %:searchString% " +
+            "or lower(i.name) like  %:searchString%) " +
+            "and i.available is true "
+    )
+    List<Item> searchItemsByDescriptionOrName(@Param("searchString") String searchString);
 
     @Modifying(clearAutomatically = true)
     @Query("update Item i " +
