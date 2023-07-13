@@ -43,7 +43,7 @@ public class ItemController {
 
     @GetMapping("/{id}")
     public OutItemDto getItem(@PathVariable("id") Long itemId,
-                           @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
+                              @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
         log.info("Запрос на получение данных предмета с ID={}", itemId);
         return itemService.getItem(itemId, userId);
     }
