@@ -18,5 +18,5 @@ public class ItemDto {
 
     private Boolean available;
 
-    private Integer request;
+    private Integer requestId;
 }
