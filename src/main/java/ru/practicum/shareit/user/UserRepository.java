@@ -19,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 "u.email = COALESCE(CAST(:#{#newUser.email} as string), u.email)  " +
             "where  u.id = :#{#newUser.id}")
     void updateUser(@Param("newUser") User newUser);
+
+    Boolean existsUserById(Long userId);
 }
