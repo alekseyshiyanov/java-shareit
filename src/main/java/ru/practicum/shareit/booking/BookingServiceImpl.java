@@ -2,6 +2,8 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ApiErrorException;
@@ -9,6 +11,7 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.validators.PageParamValidator;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -71,47 +74,67 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllBookingByUser(Long userId, String state) {
+    public List<BookingDto> getAllBookingByUser(Long userId, Integer from, Integer size, String state) {
         getUserById(userId);
+
+        Pageable pageParam = calcPageParam(from, size);
 
         switch (checkState(state)) {
             case ALL:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdOrderByStartDesc(userId));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdOrderByStartDesc(userId, pageParam).toList());
             case PAST:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByUserInPast(userId, LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByUserInPast(userId, LocalDateTime.now(), pageParam).toList());
             case CURRENT:
-                return BookingMapper.toDto(bookingRepository.getAllByBooker_IdAndEndIsAfterAndStartBeforeOrderByStartDesc(userId, LocalDateTime.now(), LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllByBooker_IdAndEndIsAfterAndStartBeforeOrderByStartDesc(userId,
+                        LocalDateTime.now(), LocalDateTime.now(), pageParam).toList());
             case FUTURE:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByUserInFuture(userId, LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByUserInFuture(userId, LocalDateTime.now(), pageParam).toList());
             case WAITING:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING, pageParam).toList());
             case REJECTED:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, pageParam).toList());
             default:
                 return BookingMapper.toDto(new ArrayList<>());
         }
     }
 
     @Override
-    public List<BookingDto> getAllBookingByOwner(Long ownerId, String state) {
+    public List<BookingDto> getAllBookingByOwner(Long ownerId, Integer from, Integer size, String state) {
         getUserById(ownerId);
+
+        Pageable pageParam = calcPageParam(from, size);
 
         switch (checkState(state)) {
             case ALL:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwner(ownerId));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwner(ownerId, pageParam).toList());
             case PAST:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInPast(ownerId, LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInPast(ownerId, LocalDateTime.now(), pageParam).toList());
             case CURRENT:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInCurrent(ownerId, LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInCurrent(ownerId, LocalDateTime.now(), pageParam).toList());
             case FUTURE:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInFuture(ownerId, LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInFuture(ownerId, LocalDateTime.now(), pageParam).toList());
             case WAITING:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerAndStatus(ownerId, BookingStatus.WAITING));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerAndStatus(ownerId, BookingStatus.WAITING, pageParam).toList());
             case REJECTED:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerAndStatus(ownerId, BookingStatus.REJECTED));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerAndStatus(ownerId, BookingStatus.REJECTED, pageParam).toList());
             default:
                 return BookingMapper.toDto(new ArrayList<>());
         }
+    }
+
+    private Pageable calcPageParam(Integer from, Integer size) {
+        int start = 0;
+
+        if (from == null && size == null) {
+            size = Integer.MAX_VALUE;
+        } else {
+            if (!PageParamValidator.validate(from, size)) {
+                sendErrorMessage(PageParamValidator.httpStatusCode, PageParamValidator.errorMessage);
+            }
+            start = from / size;
+        }
+
+        return PageRequest.of(start, size);
     }
 
     private void sendErrorMessage(HttpStatus httpStatus, String msg) {
