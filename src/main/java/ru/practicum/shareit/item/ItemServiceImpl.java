@@ -104,7 +104,7 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
 
-        return ItemMapper.toDto(itemRepository.getItemsByDescriptionContainsIgnoreCaseAndAvailableIsTrue(searchString));
+        return ItemMapper.toDto(itemRepository.searchItemsByDescriptionOrName(searchString.toLowerCase()));
     }
 
     private void validateSearchString(String searchString) {
