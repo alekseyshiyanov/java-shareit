@@ -1,25 +1,30 @@
 package ru.practicum.shareit.user;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+@Sql("/test_schema.sql")
 public class UserRepositoryTest {
 
     @Autowired
-    private TestEntityManager em;
+    private final TestEntityManager em;
 
     @Autowired
-    private UserRepository repository;
+    private final UserRepository userRepository;
 
     @Test
     public void contextLoads() {
         Assertions.assertNotNull(em);
+        Assertions.assertNotNull(userRepository);
     }
 
     @Test
@@ -31,7 +36,7 @@ public class UserRepositoryTest {
                 .build();
 
         Assertions.assertNull(testUser.getId());
-        User ret = repository.save(testUser);
+        User ret = userRepository.save(testUser);
         Assertions.assertNotNull(ret);
         Assertions.assertNotNull(ret.getId());
         Assertions.assertEquals(testUser.getName(), ret.getName());
@@ -47,7 +52,7 @@ public class UserRepositoryTest {
                 .build();
 
         Assertions.assertNull(testUser.getId());
-        User ret = repository.save(testUser);
+        User ret = userRepository.save(testUser);
         Assertions.assertNotNull(ret);
         Assertions.assertNotNull(ret.getId());
 
@@ -56,9 +61,9 @@ public class UserRepositoryTest {
                 .email("test_update@mail.ru")
                 .name("createUserStandardBehaviorUpdate")
                 .build();
-        repository.updateUser(updateUser);
+        userRepository.updateUser(updateUser);
 
-        var updatedUserOpt = repository.getUserById(ret.getId());
+        var updatedUserOpt = userRepository.getUserById(ret.getId());
         Assertions.assertTrue(updatedUserOpt.isPresent());
 
         var updatedUser = updatedUserOpt.get();
