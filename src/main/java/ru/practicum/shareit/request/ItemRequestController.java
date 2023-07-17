@@ -29,8 +29,8 @@ public class ItemRequestController {
     }
 
     @GetMapping("/{requestId}")
-    public ItemRequestDto getAllItemRequestByIdAndUserUser(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
-                                                        @PathVariable("requestId") Long requestId) {
+    public ItemRequestDto getAllItemRequestByIdAndUser(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
+                                                       @PathVariable("requestId") Long requestId) {
         log.info("Запрос на получение данных запроса вещи с requestId={} для пользователем с userId={}", requestId, userId);
         return itemRequestService.getAllItemRequestByIdAndUser(requestId, userId);
     }
