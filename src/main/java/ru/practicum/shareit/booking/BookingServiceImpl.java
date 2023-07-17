@@ -49,13 +49,15 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = getBookingById(bookingId);
 
         if (!getOwnerId(booking).equals(ownerId)) {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Подтвердить бронирование может только владелец");
+            throw sendErrorMessage(HttpStatus.NOT_FOUND,
+                    "Подтвердить бронирование может только владелец");
         }
 
         BookingStatus newStatus = approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
 
         if (booking.getStatus().equals(newStatus)) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Смена статуса бронирования не требуется");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Смена статуса бронирования не требуется");
         }
 
         bookingRepository.updateStatus(bookingId, newStatus);
@@ -67,7 +69,8 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = getBookingById(bookingId);
 
         if (!(getOwnerId(booking).equals(userId) || getBookerId(booking).equals(userId))) {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Получить данные о бронировании может только бронирующий или владелец вещи");
+            throw sendErrorMessage(HttpStatus.NOT_FOUND,
+                    "Получить данные о бронировании может только бронирующий или владелец вещи");
         }
 
         return BookingMapper.toDto(booking);
@@ -129,17 +132,12 @@ public class BookingServiceImpl implements BookingService {
             size = Integer.MAX_VALUE;
         } else {
             if (!PageParamValidator.validate(from, size)) {
-                sendErrorMessage(PageParamValidator.httpStatusCode, PageParamValidator.errorMessage);
+                throw sendErrorMessage(PageParamValidator.httpStatusCode, PageParamValidator.errorMessage);
             }
             start = from / size;
         }
 
         return PageRequest.of(start, size);
-    }
-
-    private void sendErrorMessage(HttpStatus httpStatus, String msg) {
-        log.error(msg);
-        throw new ApiErrorException(httpStatus, msg);
     }
 
     private BookingState checkState(String state) {
@@ -148,7 +146,8 @@ public class BookingServiceImpl implements BookingService {
         try {
             bookingState = BookingState.valueOf(state);
         } catch (IllegalArgumentException e) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Unknown state: UNSUPPORTED_STATUS");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Unknown state: UNSUPPORTED_STATUS");
         }
 
         return bookingState;
@@ -163,43 +162,49 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private Booking getBookingById(Long bookingId) {
-        return bookingRepository.getBookingById(bookingId).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Бронирование с ID = " + bookingId + " не найдено в базе данных");
-            return null;
-        });
+        return bookingRepository.getBookingById(bookingId).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.NOT_FOUND,
+                        "Бронирование с ID = " + bookingId + " не найдено в базе данных"));
     }
 
     private Item getItemById(Long itemId) {
-        Item item = itemRepository.getItemById(itemId).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Предмет с ID = " + itemId + " не найден в базе данных");
-            return null;
-        });
+        Item item = itemRepository.getItemById(itemId).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.NOT_FOUND,
+                        "Предмет с ID = " + itemId + " не найден в базе данных"));
 
         if (!item.getAvailable()) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Предмет с ID = " + itemId + " не доступен для бронирования");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Предмет с ID = " + itemId + " не доступен для бронирования");
         }
 
         return item;
     }
 
     private User getUserById(Long bookerId) {
-        return userRepository.getUserById(bookerId).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Пользователь с ID = " + bookerId + " не найден в базе данных");
-            return null;
-        });
+        return userRepository.getUserById(bookerId).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.NOT_FOUND,
+                        "Пользователь с ID = " + bookerId + " не найден в базе данных"));
     }
 
     private void validateBookingTime(Booking booking) {
         if (booking.getStart().isAfter(booking.getEnd())) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Время начала бронирования не может быть после времени окончания бронирования");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Время начала бронирования не может быть после времени окончания бронирования");
         }
 
         if (booking.getStart().isEqual(booking.getEnd())) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Время начала бронирования не может быть равно времени окончания бронирования");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Время начала бронирования не может быть равно времени окончания бронирования");
         }
 
         if (getOwnerId(booking).equals(getBookerId(booking))) {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Нельзя забронировать свой предмет");
+            throw sendErrorMessage(HttpStatus.NOT_FOUND,
+                    "Нельзя забронировать свой предмет");
         }
+    }
+
+    private ApiErrorException sendErrorMessage(HttpStatus httpStatus, String msg) {
+        log.error(msg);
+        return new ApiErrorException(httpStatus, msg);
     }
 }
