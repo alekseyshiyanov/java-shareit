@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
@@ -42,6 +43,7 @@ class ItemRepositoryTest {
     }
 
     @Test
+    @Rollback
     void createItemStandardBehavior() {
         createTestUsers(1);
 
@@ -54,6 +56,7 @@ class ItemRepositoryTest {
     }
 
     @Test
+    @Rollback
     void getItemByIdStandardBehavior() {
         createTestUsers(2);
 
@@ -78,6 +81,7 @@ class ItemRepositoryTest {
     }
 
     @Test
+    @Rollback
     void getItemsByUser_IdStandardBehavior() {
         createTestUsers(3);
 
@@ -95,6 +99,7 @@ class ItemRepositoryTest {
     }
 
     @Test
+    @Rollback
     void searchItemsByDescriptionOrNameStandardBehavior() {
         createTestUsers(3);
 
@@ -118,6 +123,7 @@ class ItemRepositoryTest {
     }
 
     @Test
+    @Rollback
     void updateItemStandardBehavior() {
         String newDescription = "updated item description";
 

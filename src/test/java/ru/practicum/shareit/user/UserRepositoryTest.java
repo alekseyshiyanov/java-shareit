@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 
 @DataJpaTest
@@ -28,6 +29,7 @@ public class UserRepositoryTest {
     }
 
     @Test
+    @Rollback
     void createUserStandardBehavior() {
         User testUser = User.builder()
                 .id(null)
@@ -44,33 +46,31 @@ public class UserRepositoryTest {
     }
 
     @Test
+    @Sql("/import_user_data.sql")
+    @Rollback
     void updateUserStandardBehavior() {
-        User testUser = User.builder()
-                .id(null)
-                .email("test_create@mail.ru")
-                .name("updateUserStandardBehaviorFirst")
-                .build();
+        var userForUpdateOpt = userRepository.getUserById(1000L);
 
-        Assertions.assertNull(testUser.getId());
-        User ret = userRepository.save(testUser);
-        Assertions.assertNotNull(ret);
-        Assertions.assertNotNull(ret.getId());
+        Assertions.assertTrue(userForUpdateOpt.isPresent(), "Пользователь с ID = 1000 не существует в тестовой базе данных");
 
-        User updateUser = User.builder()
-                .id(ret.getId())
-                .email("test_update@mail.ru")
-                .name("createUserStandardBehaviorUpdate")
-                .build();
-        userRepository.updateUser(updateUser);
+        var userForUpdate = userForUpdateOpt.get();
 
-        var updatedUserOpt = userRepository.getUserById(ret.getId());
-        Assertions.assertTrue(updatedUserOpt.isPresent());
+        Assertions.assertEquals("user1 name", userForUpdate.getName());
+        Assertions.assertEquals("user_1@user.com", userForUpdate.getEmail());
+
+        userForUpdate.setName("update User Name");
+        userForUpdate.setEmail("user_1_updated_0@user.com");
+
+        userRepository.updateUser(userForUpdate);
+
+        var updatedUserOpt = userRepository.getUserById(1000L);
+        Assertions.assertTrue(updatedUserOpt.isPresent(), "Пользователь с ID = 1000 не существует в тестовой базе данных");
 
         var updatedUser = updatedUserOpt.get();
 
         Assertions.assertNotNull(updatedUser.getId());
 
-        Assertions.assertEquals(updateUser.getName(), updatedUser.getName());
-        Assertions.assertEquals(updateUser.getEmail(), updatedUser.getEmail());
+        Assertions.assertEquals("update User Name", updatedUser.getName());
+        Assertions.assertEquals("user_1_updated_0@user.com", updatedUser.getEmail());
     }
 }
