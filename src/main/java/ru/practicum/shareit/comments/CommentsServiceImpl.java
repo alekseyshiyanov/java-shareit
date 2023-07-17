@@ -21,18 +21,12 @@ public class CommentsServiceImpl implements CommentsService {
 
     public CommentsDto createComment(Long itemId, Long authorId, CommentsDto commentsDto) {
         if (commentsDto == null || commentsDto.getText() == null || commentsDto.getText().isBlank()) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Комментарий не может быть пустым или равным null");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "Комментарий не может быть пустым или равным null");
         }
 
-        Booking booking = bookingRepository.getTopBookingByItem_IdAndBooker_IdAndEndBeforeOrderByEndDesc(itemId, authorId, LocalDateTime.now()).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Бронирование с ItemID = " + itemId + " и UserID = " + authorId + " не найдено в базе данных");
-            return null;
-        });
-
-        if (booking.getEnd().isAfter(LocalDateTime.now())) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Бронирование с предмета с ItemID = " + itemId
-                    + " еще не завершено");
-        }
+        Booking booking = bookingRepository.getTopBookingByItem_IdAndBooker_IdAndEndBeforeOrderByEndDesc(itemId, authorId, LocalDateTime.now()).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.BAD_REQUEST,
+                        "Бронирование с ItemID = " + itemId + " и UserID = " + authorId + " не найдено в базе данных или еще не завершено"));
 
         Comments newComment = Comments.builder()
                                         .id(null)
@@ -47,8 +41,8 @@ public class CommentsServiceImpl implements CommentsService {
         return CommentsMapper.toDto(ret);
     }
 
-    private void sendErrorMessage(HttpStatus httpStatus, String msg) {
+    private ApiErrorException sendErrorMessage(HttpStatus httpStatus, String msg) {
         log.error(msg);
-        throw new ApiErrorException(httpStatus, msg);
+        return new ApiErrorException(httpStatus, msg);
     }
 }
