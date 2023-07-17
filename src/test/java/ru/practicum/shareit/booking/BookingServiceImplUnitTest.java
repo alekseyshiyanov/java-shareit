@@ -49,9 +49,8 @@ class BookingServiceImplUnitTest {
         var bookingForChange = service.getBookingByUser(1000L, 1000L);
         Assertions.assertEquals(BookingStatus.APPROVED, bookingForChange.getStatus());
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.approvalBooking(4000L, 1000L, true);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.approvalBooking(4000L, 1000L, true));
 
         Assertions.assertTrue(ex.getMessage().contains("Смена статуса бронирования не требуется"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -63,9 +62,8 @@ class BookingServiceImplUnitTest {
         var bookingForChange = service.getBookingByUser(1000L, 1000L);
         Assertions.assertEquals(BookingStatus.APPROVED, bookingForChange.getStatus());
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.approvalBooking(5000L, 1000L, true);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.approvalBooking(5000L, 1000L, true));
 
         Assertions.assertTrue(ex.getMessage().contains("Подтвердить бронирование может только владелец"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
@@ -116,9 +114,8 @@ class BookingServiceImplUnitTest {
     @Test
     @Order(11)
     void getAllBookingByUserStateBadBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getAllBookingByUser(1000L, 0, 20, "Bad");
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getAllBookingByUser(1000L, 0, 20, "Bad"));
 
         Assertions.assertTrue(ex.getMessage().contains("Unknown state: UNSUPPORTED_STATUS"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -134,9 +131,8 @@ class BookingServiceImplUnitTest {
     @Test
     @Order(13)
     void getAllBookingByUserStateRejectedBadPageParamBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getAllBookingByUser(1000L, null, 20, "REJECTED");
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getAllBookingByUser(1000L, null, 20, "REJECTED"));
 
         Assertions.assertTrue(ex.getMessage().contains("Параметр запроса 'from' не может быть null"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -189,9 +185,8 @@ class BookingServiceImplUnitTest {
     @Test
     @Order(20)
     void getAllBookingByOwnerStateBadBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getAllBookingByOwner(4000L, 0, 20, "Bad");
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getAllBookingByOwner(4000L, 0, 20, "Bad"));
 
         Assertions.assertTrue(ex.getMessage().contains("Unknown state: UNSUPPORTED_STATUS"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -207,9 +202,8 @@ class BookingServiceImplUnitTest {
     @Test
     @Order(22)
     void getAllBookingByOwnerStateRejectedBadPageParamBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getAllBookingByOwner(4000L, null, 20, "REJECTED");
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getAllBookingByOwner(4000L, null, 20, "REJECTED"));
 
         Assertions.assertTrue(ex.getMessage().contains("Параметр запроса 'from' не может быть null"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -240,9 +234,8 @@ class BookingServiceImplUnitTest {
     @Test
     @Order(25)
     void getBookingByUserWrongUserBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getBookingByUser(4000L, 1000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getBookingByUser(4000L, 1000L));
 
         Assertions.assertTrue(ex.getMessage().contains("Получить данные о бронировании может только бронирующий или владелец вещи"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
@@ -274,9 +267,8 @@ class BookingServiceImplUnitTest {
                 .end(LocalDateTime.now().plusHours(10))
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.createBooking(newBookingDto, 6000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.createBooking(newBookingDto, 6000L));
 
         Assertions.assertTrue(ex.getMessage().contains("не найден в базе данных"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
@@ -291,9 +283,8 @@ class BookingServiceImplUnitTest {
                 .end(LocalDateTime.now().plusHours(10))
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.createBooking(newBookingDto, 6000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.createBooking(newBookingDto, 6000L));
 
         Assertions.assertTrue(ex.getMessage().contains("не доступен для бронирования"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -308,9 +299,8 @@ class BookingServiceImplUnitTest {
                 .end(LocalDateTime.now().plusHours(10))
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.createBooking(newBookingDto, 60000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.createBooking(newBookingDto, 60000L));
 
         Assertions.assertTrue(ex.getMessage().contains("Пользователь с ID = "));
         Assertions.assertTrue(ex.getMessage().contains("не найден в базе данных"));
@@ -326,9 +316,8 @@ class BookingServiceImplUnitTest {
                 .end(LocalDateTime.now().plusHours(10))
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.createBooking(newBookingDto, 4000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.createBooking(newBookingDto, 4000L));
 
         Assertions.assertTrue(ex.getMessage().contains("Нельзя забронировать свой предмет"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
@@ -343,9 +332,8 @@ class BookingServiceImplUnitTest {
                 .end(LocalDateTime.now().plusMinutes(10))
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.createBooking(newBookingDto, 6000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.createBooking(newBookingDto, 6000L));
 
         Assertions.assertTrue(ex.getMessage().contains("Время начала бронирования не может быть после времени окончания бронирования"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -362,9 +350,8 @@ class BookingServiceImplUnitTest {
                 .end(bookingTime)
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.createBooking(newBookingDto, 6000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.createBooking(newBookingDto, 6000L));
 
         Assertions.assertTrue(ex.getMessage().contains("Время начала бронирования не может быть равно времени окончания бронирования"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -373,9 +360,8 @@ class BookingServiceImplUnitTest {
     @Test
     @Order(32)
     void getBookingByBookerNoBookingBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getBookingByUser(40000L, 5000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getBookingByUser(40000L, 5000L));
 
         Assertions.assertTrue(ex.getMessage().contains("Бронирование с ID = "));
         Assertions.assertTrue(ex.getMessage().contains("не найдено в базе данных"));

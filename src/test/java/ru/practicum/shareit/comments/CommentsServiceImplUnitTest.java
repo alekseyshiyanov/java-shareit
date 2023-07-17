@@ -60,9 +60,8 @@ class CommentsServiceImplUnitTest {
     @Test
     @Order(3)
     void createCommentNullDtoBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            commentsService.createComment(2000L, 5000L, null);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                commentsService.createComment(2000L, 5000L, null));
 
         Assertions.assertTrue(ex.getMessage().contains("Комментарий не может быть пустым или равным null"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -78,9 +77,8 @@ class CommentsServiceImplUnitTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            commentsService.createComment(2000L, 5000L, newCommentDto);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                commentsService.createComment(2000L, 5000L, newCommentDto));
 
         Assertions.assertTrue(ex.getMessage().contains("Комментарий не может быть пустым или равным null"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -96,9 +94,8 @@ class CommentsServiceImplUnitTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            commentsService.createComment(2000L, 5000L, newCommentDto);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                commentsService.createComment(2000L, 5000L, newCommentDto));
 
         Assertions.assertTrue(ex.getMessage().contains("Комментарий не может быть пустым или равным null"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -114,9 +111,8 @@ class CommentsServiceImplUnitTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            commentsService.createComment(2000L, 5000L, newCommentDto);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                commentsService.createComment(2000L, 5000L, newCommentDto));
 
         Assertions.assertTrue(ex.getMessage().contains("Комментарий не может быть пустым или равным null"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -132,9 +128,8 @@ class CommentsServiceImplUnitTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            commentsService.createComment(5000L, 5000L, newCommentDto);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                commentsService.createComment(5000L, 5000L, newCommentDto));
 
         Assertions.assertTrue(ex.getMessage().contains("Бронирование с ItemID = 5000 и UserID = 5000 не найдено в базе данных или еще не завершено"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -150,9 +145,8 @@ class CommentsServiceImplUnitTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            commentsService.createComment(2000L, 6000L, newCommentDto);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                commentsService.createComment(2000L, 6000L, newCommentDto));
 
         Assertions.assertTrue(ex.getMessage().contains("Бронирование с ItemID = 2000 и UserID = 6000 не найдено в базе данных или еще не завершено"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -168,9 +162,8 @@ class CommentsServiceImplUnitTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            commentsService.createComment(1000L, 5000L, newCommentDto);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                commentsService.createComment(1000L, 5000L, newCommentDto));
 
         Assertions.assertTrue(ex.getMessage().contains("Бронирование с ItemID = 1000 и UserID = 5000 не найдено в базе данных или еще не завершено"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());

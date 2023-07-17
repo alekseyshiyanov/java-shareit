@@ -75,9 +75,8 @@ class UserServiceImplUnitTest {
 
         service.deleteUser(retUser.getId());
 
-        Exception ex = Assertions.assertThrows(NoResultException.class, () -> {
-            query.setParameter("email", testUserDto.getEmail()).getSingleResult();
-        });
+        Exception ex = Assertions.assertThrows(NoResultException.class, () ->
+                query.setParameter("email", testUserDto.getEmail()).getSingleResult());
 
         Assertions.assertTrue(ex.getMessage().contains("No entity found for query"));
     }
@@ -134,9 +133,8 @@ class UserServiceImplUnitTest {
     @Test
     @Order(7)
     void getUserNoRecordBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getUser(999L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getUser(999L));
 
         Assertions.assertTrue(ex.getMessage().contains("не найден в базе данных"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
@@ -145,9 +143,8 @@ class UserServiceImplUnitTest {
     @Test
     @Order(8)
     void getUserNegativeUserIdBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getUser(-1L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getUser(-1L));
 
         Assertions.assertTrue(ex.getMessage().contains("Ошибка проверки userID. ID должен быть положительным числом больше 0"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());

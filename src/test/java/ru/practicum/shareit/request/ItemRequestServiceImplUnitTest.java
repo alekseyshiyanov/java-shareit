@@ -69,9 +69,8 @@ class ItemRequestServiceImplUnitTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.createItemRequest(irDto,10000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.createItemRequest(irDto,10000L));
 
         Assertions.assertTrue(ex.getMessage().contains("не найден в базе данных"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
@@ -80,9 +79,8 @@ class ItemRequestServiceImplUnitTest {
     @Test
     @Order(4)
     void getAllItemRequestByUserNoUserBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getAllItemRequestByUser(1900L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getAllItemRequestByUser(1900L));
 
         Assertions.assertTrue(ex.getMessage().contains("не найден в базе данных"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
@@ -135,9 +133,8 @@ class ItemRequestServiceImplUnitTest {
     @Test
     @Order(7)
     void getPageItemRequestByUserBadFromParamBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getPageItemRequestByUser(1000L, null, 20);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getPageItemRequestByUser(1000L, null, 20));
 
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
     }
@@ -189,9 +186,8 @@ class ItemRequestServiceImplUnitTest {
     @Test
     @Order(10)
     void getAllItemRequestByIdAndUserNegativeRequestIdBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getAllItemRequestByIdAndUser(-1L, 4000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getAllItemRequestByIdAndUser(-1L, 4000L));
 
         Assertions.assertEquals("'requestId' не может быть отрицательным", ex.getMessage());
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -200,9 +196,8 @@ class ItemRequestServiceImplUnitTest {
     @Test
     @Order(11)
     void getAllItemRequestByIdAndUserNegativeUserIdBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getAllItemRequestByIdAndUser(1000L, -2L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getAllItemRequestByIdAndUser(1000L, -2L));
 
         Assertions.assertEquals("'userId' не может быть отрицательным", ex.getMessage());
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -211,9 +206,8 @@ class ItemRequestServiceImplUnitTest {
     @Test
     @Order(12)
     void getAllItemRequestByIdAndUserNoItemRequestBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getAllItemRequestByIdAndUser(1100L, 1000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getAllItemRequestByIdAndUser(1100L, 1000L));
 
         Assertions.assertTrue(ex.getMessage().contains("Запрос с ID = "));
         Assertions.assertTrue(ex.getMessage().contains("не найден в базе данных"));
