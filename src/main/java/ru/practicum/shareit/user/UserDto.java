@@ -14,6 +14,7 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class UserDto implements Create, Update {
     private Long id;
+
     private String name;
 
     @NotEmpty(groups = Create.class, message = "Проверьте правильность ввода адреса электронной почты: не может быть пустым или равен null")
