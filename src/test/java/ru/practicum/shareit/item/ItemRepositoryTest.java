@@ -113,13 +113,13 @@ class ItemRepositoryTest {
         Assertions.assertNotNull(itemRepository.save(newItem2));
         Assertions.assertNotNull(itemRepository.save(newItem3));
 
-        var item_0 = itemRepository.searchItemsByDescriptionOrName(newItem1.getDescription().toLowerCase());
-        var item_1 = itemRepository.searchItemsByDescriptionOrName(newItem2.getName().toLowerCase());
+        var item0 = itemRepository.searchItemsByDescriptionOrName(newItem1.getDescription().toLowerCase());
+        var item1 = itemRepository.searchItemsByDescriptionOrName(newItem2.getName().toLowerCase());
 
-        Assertions.assertEquals(1, item_0.size());
-        Assertions.assertEquals(0, item_1.size());
+        Assertions.assertEquals(1, item0.size());
+        Assertions.assertEquals(0, item1.size());
 
-        Assertions.assertEquals(newItem1.getDescription(), item_0.get(0).getDescription());
+        Assertions.assertEquals(newItem1.getDescription(), item0.get(0).getDescription());
     }
 
     @Test
