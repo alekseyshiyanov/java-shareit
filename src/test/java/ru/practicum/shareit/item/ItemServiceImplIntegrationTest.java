@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import ru.practicum.shareit.exceptions.ApiErrorException;
 
 import javax.transaction.Transactional;
 
