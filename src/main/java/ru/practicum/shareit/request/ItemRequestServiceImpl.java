@@ -56,7 +56,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         }
 
         if (!PageParamValidator.validate(from, size)) {
-            sendErrorMessage(PageParamValidator.httpStatusCode, PageParamValidator.errorMessage);
+            throw sendErrorMessage(PageParamValidator.httpStatusCode, PageParamValidator.errorMessage);
         }
 
         checkUserById(userId);
@@ -73,11 +73,13 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     public ItemRequestDto getAllItemRequestByIdAndUser(Long requestId, Long userId) {
         if (requestId < 0) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "'requestId' не может быть отрицательным");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "'requestId' не может быть отрицательным");
         }
 
         if (userId < 0) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "'userId' не может быть отрицательным");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "'userId' не может быть отрицательным");
         }
 
         checkUserById(userId);
@@ -100,28 +102,26 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private User getUserById(Long userId) {
-        return userRepository.getUserById(userId).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Пользователь с ID = " + userId + " не найден в базе данных");
-            return null;
-        });
+        return userRepository.getUserById(userId).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.NOT_FOUND,
+                        "Пользователь с ID = " + userId + " не найден в базе данных"));
     }
 
     private ItemRequest getItemRequestById(Long itemRequestId) {
-        return itemRequestRepository.getItemRequestById(itemRequestId).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Запрос с ID = " + itemRequestId + " не найден в базе данных");
-            return null;
-        });
+        return itemRequestRepository.getItemRequestById(itemRequestId).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.NOT_FOUND,
+                        "Запрос с ID = " + itemRequestId + " не найден в базе данных"));
     }
 
     private void checkUserById(Long userId) {
         if (!userRepository.existsUserById(userId)) {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Пользователь с ID = " + userId + " не найден в базе данных");
+            throw sendErrorMessage(HttpStatus.NOT_FOUND, "Пользователь с ID = " + userId + " не найден в базе данных");
         }
     }
 
-    private void sendErrorMessage(HttpStatus httpStatus, String msg) {
+    private ApiErrorException sendErrorMessage(HttpStatus httpStatus, String msg) {
         log.error(msg);
-        throw new ApiErrorException(httpStatus, msg);
+        return new ApiErrorException(httpStatus, msg);
     }
 
     public List<Item> fullTextSearchItemByNameOrDescription(String word){
