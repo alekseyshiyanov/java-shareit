@@ -69,9 +69,8 @@ class ItemRequestServiceImplIntegrationTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.createItemRequest(irDto,10000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.createItemRequest(irDto,10000L));
 
         Assertions.assertTrue(ex.getMessage().contains("не найден в базе данных"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());

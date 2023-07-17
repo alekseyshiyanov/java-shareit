@@ -48,9 +48,8 @@ class BookingServiceImplIntegrationTest {
         var bookingForChange = service.getBookingByUser(1000L, 1000L);
         Assertions.assertEquals(BookingStatus.APPROVED, bookingForChange.getStatus());
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.approvalBooking(4000L, 1000L, true);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.approvalBooking(4000L, 1000L, true));
 
         Assertions.assertTrue(ex.getMessage().contains("Смена статуса бронирования не требуется"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -62,9 +61,8 @@ class BookingServiceImplIntegrationTest {
         var bookingForChange = service.getBookingByUser(1000L, 1000L);
         Assertions.assertEquals(BookingStatus.APPROVED, bookingForChange.getStatus());
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.approvalBooking(5000L, 1000L, true);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.approvalBooking(5000L, 1000L, true));
 
         Assertions.assertTrue(ex.getMessage().contains("Подтвердить бронирование может только владелец"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
@@ -115,9 +113,8 @@ class BookingServiceImplIntegrationTest {
     @Test
     @Order(11)
     void getAllBookingByUserStateBadBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getAllBookingByUser(1000L, 0, 20, "Bad");
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getAllBookingByUser(1000L, 0, 20, "Bad"));
 
         Assertions.assertTrue(ex.getMessage().contains("Unknown state: UNSUPPORTED_STATUS"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
@@ -133,9 +130,8 @@ class BookingServiceImplIntegrationTest {
     @Test
     @Order(13)
     void getAllBookingByUserStateRejectedBadPageParamBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getAllBookingByUser(1000L, null, 20, "REJECTED");
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getAllBookingByUser(1000L, null, 20, "REJECTED"));
 
         Assertions.assertTrue(ex.getMessage().contains("Параметр запроса 'from' не может быть null"));
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());

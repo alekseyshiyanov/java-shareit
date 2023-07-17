@@ -66,9 +66,8 @@ class UserServiceImplIntegrationTest {
 
         service.deleteUser(retUser.getId());
 
-        Exception ex = Assertions.assertThrows(NoResultException.class, () -> {
-            query.setParameter("email", testUserDto.getEmail()).getSingleResult();
-        });
+        Exception ex = Assertions.assertThrows(NoResultException.class, () ->
+                query.setParameter("email", testUserDto.getEmail()).getSingleResult());
 
         Assertions.assertTrue(ex.getMessage().contains("No entity found for query"));
     }
