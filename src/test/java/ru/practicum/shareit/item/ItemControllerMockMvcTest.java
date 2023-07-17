@@ -55,7 +55,7 @@ class ItemControllerMockMvcTest {
     }
 
     @Test
-    void createItem() throws Exception{
+    void createItem() throws Exception {
         Long ownerId = 1L;
         ItemDto testItemDto = createItemDto(1L, false);
 
@@ -78,7 +78,7 @@ class ItemControllerMockMvcTest {
     }
 
     @Test
-    void createComment() throws Exception{
+    void createComment() throws Exception {
         Long ownerId = 1L;
         Long itemId = 1L;
         LocalDateTime ldt = LocalDateTime.now();
@@ -102,7 +102,7 @@ class ItemControllerMockMvcTest {
     }
 
     @Test
-    void getItem() throws Exception{
+    void getItem() throws Exception {
         ItemDto testItemDto = createItemDto(1L, false);
         OutItemDto testOutItemDto = createOutItemDto(testItemDto);
 
@@ -127,7 +127,7 @@ class ItemControllerMockMvcTest {
     }
 
     @Test
-    void searchItem() throws Exception{
+    void searchItem() throws Exception {
         Long ownerId = 1L;
 
         List<ItemDto> testItemDtoList = Arrays.asList(
@@ -155,7 +155,7 @@ class ItemControllerMockMvcTest {
     }
 
     @Test
-    void updateItem() throws Exception{
+    void updateItem() throws Exception {
         Long ownerId = 1L;
 
         ItemDto testItemDto = createItemDto(1L, false);
@@ -180,7 +180,7 @@ class ItemControllerMockMvcTest {
     }
 
     @Test
-    void getItemsByOwnerId() throws Exception{
+    void getItemsByOwnerId() throws Exception {
         Long ownerId = 1L;
         ItemDto testItemDto = createItemDto(1L, false);
 

@@ -153,11 +153,11 @@ class BookingRepositoryTest {
     @Order(8)
     @Test
     void getAllBookingByOwnerStandardBehavior() {
-        var allBookings_0 = bookingRepository.getAllBookingByOwner(4000L, PageRequest.of(0, Integer.MAX_VALUE)).toList();
-        Assertions.assertEquals(5, allBookings_0.size());
+        var allBookings0 = bookingRepository.getAllBookingByOwner(4000L, PageRequest.of(0, Integer.MAX_VALUE)).toList();
+        Assertions.assertEquals(5, allBookings0.size());
 
-        var allBookings_1 = bookingRepository.getAllBookingByOwner(6000L, PageRequest.of(0, Integer.MAX_VALUE)).toList();
-        Assertions.assertEquals(1, allBookings_1.size());
+        var allBookings1 = bookingRepository.getAllBookingByOwner(6000L, PageRequest.of(0, Integer.MAX_VALUE)).toList();
+        Assertions.assertEquals(1, allBookings1.size());
     }
 
     @Order(9)
@@ -166,7 +166,7 @@ class BookingRepositoryTest {
         fillTestUsers();
         fillTestItems();
 
-        Booking newBooking_1 = Booking.builder()
+        Booking newBooking1 = Booking.builder()
                 .id(null)
                 .start(LocalDateTime.now().plusMinutes(10))
                 .end(LocalDateTime.now().plusHours(1))
@@ -175,7 +175,7 @@ class BookingRepositoryTest {
                 .status(BookingStatus.CANCELED)
                 .build();
 
-        Assertions.assertNotNull(bookingRepository.save(newBooking_1));
+        Assertions.assertNotNull(bookingRepository.save(newBooking1));
 
         var allBookings = bookingRepository.getAllBookingByOwnerAndStatus(testUserList.get(1).getId(),
                 BookingStatus.CANCELED, PageRequest.of(0, Integer.MAX_VALUE)).toList();

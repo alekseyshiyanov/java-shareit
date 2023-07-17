@@ -60,24 +60,24 @@ class ItemRepositoryTest {
     void getItemByIdStandardBehavior() {
         createTestUsers(2);
 
-        Item newItem_1 = createItem(testUserList.get(0));
-        Item newItem_2 = createItem(testUserList.get(1));
+        Item newItem1 = createItem(testUserList.get(0));
+        Item newItem2 = createItem(testUserList.get(1));
 
-        Assertions.assertNull(newItem_1.getId());
-        Assertions.assertNull(newItem_2.getId());
+        Assertions.assertNull(newItem1.getId());
+        Assertions.assertNull(newItem2.getId());
 
-        Assertions.assertNotNull(itemRepository.save(newItem_1));
-        Assertions.assertNotNull(itemRepository.save(newItem_2));
+        Assertions.assertNotNull(itemRepository.save(newItem1));
+        Assertions.assertNotNull(itemRepository.save(newItem2));
 
-        var itemOpt = itemRepository.getItemById(newItem_1.getId());
+        var itemOpt = itemRepository.getItemById(newItem1.getId());
 
         Assertions.assertTrue(itemOpt.isPresent());
 
         var item = itemOpt.get();
 
-        Assertions.assertEquals(newItem_1.getName(), item.getName());
-        Assertions.assertEquals(newItem_1.getDescription(), item.getDescription());
-        Assertions.assertEquals(newItem_1.getUser(), item.getUser());
+        Assertions.assertEquals(newItem1.getName(), item.getName());
+        Assertions.assertEquals(newItem1.getDescription(), item.getDescription());
+        Assertions.assertEquals(newItem1.getUser(), item.getUser());
     }
 
     @Test
@@ -85,13 +85,13 @@ class ItemRepositoryTest {
     void getItemsByUser_IdStandardBehavior() {
         createTestUsers(3);
 
-        Item newItem_1 = createItem(testUserList.get(0));
-        Item newItem_2 = createItem(testUserList.get(1));
-        Item newItem_3 = createItem(testUserList.get(0));
+        Item newItem1 = createItem(testUserList.get(0));
+        Item newItem2 = createItem(testUserList.get(1));
+        Item newItem3 = createItem(testUserList.get(0));
 
-        Assertions.assertNotNull(itemRepository.save(newItem_1));
-        Assertions.assertNotNull(itemRepository.save(newItem_2));
-        Assertions.assertNotNull(itemRepository.save(newItem_3));
+        Assertions.assertNotNull(itemRepository.save(newItem1));
+        Assertions.assertNotNull(itemRepository.save(newItem2));
+        Assertions.assertNotNull(itemRepository.save(newItem3));
 
         var itemList = itemRepository.getItemsByUser_IdOrderByIdAsc(testUserList.get(0).getId());
         Assertions.assertNotEquals(0, itemList.size());
@@ -103,23 +103,23 @@ class ItemRepositoryTest {
     void searchItemsByDescriptionOrNameStandardBehavior() {
         createTestUsers(3);
 
-        Item newItem_1 = createItem(testUserList.get(0));
-        Item newItem_2 = createItem(testUserList.get(1));
-        Item newItem_3 = createItem(testUserList.get(1));
+        Item newItem1 = createItem(testUserList.get(0));
+        Item newItem2 = createItem(testUserList.get(1));
+        Item newItem3 = createItem(testUserList.get(1));
 
-        newItem_1.setAvailable(true);
+        newItem1.setAvailable(true);
 
-        Assertions.assertNotNull(itemRepository.save(newItem_1));
-        Assertions.assertNotNull(itemRepository.save(newItem_2));
-        Assertions.assertNotNull(itemRepository.save(newItem_3));
+        Assertions.assertNotNull(itemRepository.save(newItem1));
+        Assertions.assertNotNull(itemRepository.save(newItem2));
+        Assertions.assertNotNull(itemRepository.save(newItem3));
 
-        var item_0 = itemRepository.searchItemsByDescriptionOrName(newItem_1.getDescription().toLowerCase());
-        var item_1 = itemRepository.searchItemsByDescriptionOrName(newItem_2.getName().toLowerCase());
+        var item_0 = itemRepository.searchItemsByDescriptionOrName(newItem1.getDescription().toLowerCase());
+        var item_1 = itemRepository.searchItemsByDescriptionOrName(newItem2.getName().toLowerCase());
 
         Assertions.assertEquals(1, item_0.size());
         Assertions.assertEquals(0, item_1.size());
 
-        Assertions.assertEquals(newItem_1.getDescription(), item_0.get(0).getDescription());
+        Assertions.assertEquals(newItem1.getDescription(), item_0.get(0).getDescription());
     }
 
     @Test
@@ -129,16 +129,16 @@ class ItemRepositoryTest {
 
         createTestUsers(1);
 
-        Item newItem_1 = createItem(testUserList.get(0));
+        Item newItem1 = createItem(testUserList.get(0));
 
-        Assertions.assertNotNull(itemRepository.save(newItem_1));
-        Assertions.assertNotEquals(newDescription, newItem_1.getDescription());
+        Assertions.assertNotNull(itemRepository.save(newItem1));
+        Assertions.assertNotEquals(newDescription, newItem1.getDescription());
 
-        newItem_1.setDescription(newDescription);
+        newItem1.setDescription(newDescription);
 
-        itemRepository.updateItem(newItem_1);
+        itemRepository.updateItem(newItem1);
 
-        var updatedItemOpt = itemRepository.getItemById(newItem_1.getId());
+        var updatedItemOpt = itemRepository.getItemById(newItem1.getId());
         Assertions.assertTrue(updatedItemOpt.isPresent());
 
         var updatedItem = updatedItemOpt.get();

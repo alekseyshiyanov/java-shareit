@@ -124,7 +124,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return new ApiErrorException(httpStatus, msg);
     }
 
-    public List<Item> fullTextSearchItemByNameOrDescription(String word){
+    public List<Item> fullTextSearchItemByNameOrDescription(String word) {
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
 
         QueryBuilder queryBuilder = fullTextEntityManager

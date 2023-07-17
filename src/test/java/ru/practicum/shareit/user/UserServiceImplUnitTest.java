@@ -84,14 +84,14 @@ class UserServiceImplUnitTest {
     @Test
     @Order(4)
     void getUserListStandardBehavior() {
-        UserDto testUserDto_2 = UserDto.builder()
+        UserDto testUserDto2 = UserDto.builder()
                 .id(null)
                 .name("intTest testUserName 2")
                 .email("test_user_email_2@mail.com")
                 .build();
 
         service.createUser(testUserDto);
-        service.createUser(testUserDto_2);
+        service.createUser(testUserDto2);
 
         var savedUserList = service.getUsersList();
 

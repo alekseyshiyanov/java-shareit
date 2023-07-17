@@ -36,11 +36,11 @@ public class Item {
     @Column(name = "item_id")
     private Long id;
 
-    @Field(name="nameFiltered", termVector = TermVector.YES)
+    @Field(name ="nameFiltered", termVector = TermVector.YES)
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Field(name="descriptionFiltered", termVector = TermVector.YES)
+    @Field(name ="descriptionFiltered", termVector = TermVector.YES)
     @Column(name = "description", nullable = false)
     private String description;
 
