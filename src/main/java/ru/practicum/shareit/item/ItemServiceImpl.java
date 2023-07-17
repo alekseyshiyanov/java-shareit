@@ -109,58 +109,56 @@ public class ItemServiceImpl implements ItemService {
 
     private void validateSearchString(String searchString) {
         if (searchString == null) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Строка поиска не может быть null");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "Строка поиска не может быть null");
         }
     }
 
     private void validateOwnerId(Long ownerId) {
         if (ownerId == null) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "ID владельца не может быть null");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "ID владельца не может быть null");
         }
     }
 
     private void validateItemId(Long itemId) {
         if (itemId == null) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "ID предмета не должен быть null");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "ID предмета не должен быть null");
         }
 
         if (itemId < 0L) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "ID предмета должен быть положительным числом");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "ID предмета должен быть положительным числом");
         }
     }
 
     private void validateItem(Item item) {
         if (item.getAvailable() == null) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Доступность предмета не может быть null");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "Доступность предмета не может быть null");
         }
 
         if ((item.getDescription() == null) || (item.getDescription().isBlank())) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Описание предмета предмета не может быть пустым или null");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "Описание предмета предмета не может быть пустым или null");
         }
 
         if ((item.getName() == null) || (item.getName().isBlank())) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Название предмета предмета не может быть пустым или null");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "Название предмета предмета не может быть пустым или null");
         }
     }
 
     private User getOwnerById(Long ownerId) {
         validateOwnerId(ownerId);
 
-        return userRepository.getUserById(ownerId).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.NOT_FOUND,"Пользователь с ID = " + ownerId + " не найден в базе данных");
-            return null;
-        });
+        return userRepository.getUserById(ownerId).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.NOT_FOUND,
+                        "Пользователь с ID = " + ownerId + " не найден в базе данных"));
     }
 
     private Item getItemById(Long itemId) {
-        return itemRepository.getItemById(itemId).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Предмет с ID = " + itemId + " не найден в базе данных");
-            return null;
-        });
+        return itemRepository.getItemById(itemId).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.NOT_FOUND,
+                        "Предмет с ID = " + itemId + " не найден в базе данных"));
     }
 
-    private void sendErrorMessage(HttpStatus httpStatus, String msg) {
+    private ApiErrorException sendErrorMessage(HttpStatus httpStatus, String msg) {
         log.error(msg);
-        throw new ApiErrorException(httpStatus, msg);
+        return new ApiErrorException(httpStatus, msg);
     }
 }
