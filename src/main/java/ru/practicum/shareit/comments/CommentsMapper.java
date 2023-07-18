@@ -28,14 +28,4 @@ public class CommentsMapper {
                 .created(comments.getCreated())
                 .build();
     }
-
-    public static Comments fromDto(String text) {
-        return Comments.builder()
-                .id(null)
-                .text(text)
-                .item(null)
-                .author(null)
-                .created(LocalDateTime.now())
-                .build();
-    }
 }
