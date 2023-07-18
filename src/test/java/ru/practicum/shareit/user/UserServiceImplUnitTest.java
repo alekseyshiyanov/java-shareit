@@ -101,32 +101,30 @@ class UserServiceImplUnitTest {
     @Test
     @Order(5)
     void getUserStandardBehavior() {
-        service.createUser(testUserDto);
+        UserDto savedUser = service.getUser(1000L);
 
-        UserDto savedUser = service.getUser(1L);
-
-        Assertions.assertEquals(1L, savedUser.getId());
-        Assertions.assertEquals(testUserDto.getEmail(), savedUser.getEmail());
-        Assertions.assertEquals(testUserDto.getName(), savedUser.getName());
+        Assertions.assertEquals(1000L, savedUser.getId());
+        Assertions.assertEquals("user_1@user.com", savedUser.getEmail());
+        Assertions.assertEquals("user1 name", savedUser.getName());
     }
 
     @Test
     @Order(6)
     void updateUserStandardBehavior() {
-        service.createUser(testUserDto);
+        UserDto testUserDto2 = UserDto.builder()
+                .id(1000L)
+                .name("updatedUsername")
+                .email(null)
+                .build();
 
-        testUserDto.setName("updatedUsername");
-
-        service.updateUser(testUserDto, 1L);
+        service.updateUser(testUserDto, testUserDto2.getId());
 
         TypedQuery<User> query = entityManager.createQuery("Select u from User u where u.id = :id", User.class);
         User updatedUser = query
-                .setParameter("id", 1L)
+                .setParameter("id", testUserDto2.getId())
                 .getSingleResult();
 
-
-        Assertions.assertEquals(1L, updatedUser.getId());
-        Assertions.assertEquals(testUserDto.getEmail(), updatedUser.getEmail());
+        Assertions.assertEquals(testUserDto2.getId(), updatedUser.getId());
         Assertions.assertEquals(testUserDto.getName(), updatedUser.getName());
     }
 

@@ -1,19 +1,19 @@
-DROP TABLE IF EXISTS public.booking;
-DROP TABLE IF EXISTS public.comments;
-DROP TABLE IF EXISTS public.item;
-DROP TABLE IF EXISTS public.item_request;
-DROP TABLE IF EXISTS public.users;
+DROP TABLE public.comments;
+DROP TABLE public.booking;
+DROP TABLE public.item;
+DROP TABLE public.item_request;
+DROP TABLE public.users;
 
-CREATE TABLE public.users (
-                                        user_id bigserial    NOT NULL,
+CREATE TABLE IF NOT EXISTS public.users (
+                                        user_id integer auto_increment    NOT NULL,
                                         name varchar(255) NOT NULL,
                                         email varchar(255) NOT NULL,
                                         CONSTRAINT User_pkey PRIMARY KEY (user_id),
                                         CONSTRAINT Email_Unique UNIQUE (email)
 );
 
-CREATE TABLE public.item_request (
-                                        item_request_id bigserial NOT NULL,
+CREATE TABLE IF NOT EXISTS public.item_request (
+                                        item_request_id integer auto_increment NOT NULL,
                                         description varchar(255) NOT NULL,
                                         requester_id bigint NOT NULL,
                                         request_created timestamp without time zone NOT NULL,
@@ -23,8 +23,8 @@ CREATE TABLE public.item_request (
                                             ON UPDATE CASCADE
 );
 
-CREATE TABLE public.item (
-                                        item_id bigserial NOT NULL,
+CREATE TABLE IF NOT EXISTS public.item (
+                                        item_id integer auto_increment NOT NULL,
                                         name varchar(255) NOT NULL,
                                         description varchar(255) NOT NULL,
                                         available boolean NOT NULL,
@@ -39,8 +39,8 @@ CREATE TABLE public.item (
                                             ON UPDATE CASCADE
 );
 
-CREATE TABLE public.booking (
-                                        booking_id bigserial NOT NULL,
+CREATE TABLE IF NOT EXISTS public.booking (
+                                        booking_id integer auto_increment NOT NULL,
                                         start_time timestamp without time zone NOT NULL,
                                         end_time timestamp without time zone,
                                         item_id bigint NOT NULL,
@@ -50,13 +50,13 @@ CREATE TABLE public.booking (
                                         CONSTRAINT Booker_Id_FK FOREIGN KEY(booker_id)   REFERENCES public.users (user_id)
                                             ON DELETE CASCADE
                                             ON UPDATE CASCADE,
-                                        CONSTRAINT Item_Id_FK FOREIGN KEY(item_id)   REFERENCES public.item (item_id)
+                                        CONSTRAINT Booking_Item_Id_FK FOREIGN KEY(item_id)   REFERENCES public.item (item_id)
                                             ON DELETE CASCADE
                                             ON UPDATE CASCADE
 );
 
-CREATE TABLE public.comments (
-                                        comments_id bigserial NOT NULL,
+CREATE TABLE IF NOT EXISTS public.comments (
+                                        comments_id integer auto_increment NOT NULL,
                                         text varchar(255) NOT NULL,
                                         item_id bigint NOT NULL,
                                         author_id bigint NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE public.comments (
                                         CONSTRAINT Author_Id_FK FOREIGN KEY(author_id)   REFERENCES public.users (user_id)
                                             ON DELETE CASCADE
                                             ON UPDATE CASCADE,
-                                        CONSTRAINT Item_Id_FK FOREIGN KEY(item_id)   REFERENCES public.item (item_id)
+                                        CONSTRAINT Comments_Item_Id_FK FOREIGN KEY(item_id)   REFERENCES public.item (item_id)
                                             ON DELETE CASCADE
                                             ON UPDATE CASCADE
 );
