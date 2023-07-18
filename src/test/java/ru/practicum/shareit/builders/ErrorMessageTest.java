@@ -11,7 +11,7 @@ class ErrorMessageTest {
         var testErrMsg = ErrorMessage.buildRestApiErrorResponse(HttpStatus.NOT_FOUND, "Тестовое сообщение");
 
         Assertions.assertEquals(String.valueOf(HttpStatus.NOT_FOUND.value()), testErrMsg.get("status code"));
-        Assertions.assertEquals(String.valueOf(HttpStatus.NOT_FOUND.getReasonPhrase()), testErrMsg.get("error message"));
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), testErrMsg.get("error message"));
         Assertions.assertEquals("Тестовое сообщение", testErrMsg.get("error"));
     }
 }
