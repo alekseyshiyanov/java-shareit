@@ -50,17 +50,32 @@ class UserControllerMockMvcTest {
     }
 
     @Test
+    void testExceptionHandler() throws Exception {
+        UserDto testUser = createUserDto(1L);
+        testUser.setEmail(null);
+
+        mvc.perform(
+                        post("/users")
+                                .content(mapper.writeValueAsString(testUser))
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void createNewUser() throws Exception {
         UserDto testUser = createUserDto(1L);
 
         when(userService.createUser(any(UserDto.class))).thenReturn(testUser);
 
         mvc.perform(
-                post("/users")
-                        .content(mapper.writeValueAsString(testUser))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
+                        post("/users")
+                                .content(mapper.writeValueAsString(testUser))
+                                .characterEncoding(StandardCharsets.UTF_8)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(testUser.getId()), Long.class))
