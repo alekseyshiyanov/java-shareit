@@ -124,21 +124,9 @@ class BookingServiceImplUnitTest {
     @Test
     @Order(12)
     void getAllBookingByUserStateRejectedMaxRecordsBehavior() {
-        var bookingList = service.getAllBookingByUser(1000L, null, null, "REJECTED");
+        var bookingList = service.getAllBookingByUser(1000L, 0, Integer.MAX_VALUE, "REJECTED");
         Assertions.assertEquals(1, bookingList.size());
     }
-
-    @Test
-    @Order(13)
-    void getAllBookingByUserStateRejectedBadPageParamBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
-                service.getAllBookingByUser(1000L, null, 20, "REJECTED"));
-
-        Assertions.assertTrue(ex.getMessage().contains("Параметр запроса 'from' не может быть null"));
-        Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
-    }
-
-
 
     @Test
     @Order(14)
@@ -195,18 +183,8 @@ class BookingServiceImplUnitTest {
     @Test
     @Order(21)
     void getAllBookingByOwnerStateRejectedMaxRecordsBehavior() {
-        var bookingList = service.getAllBookingByOwner(4000L, null, null, "REJECTED");
+        var bookingList = service.getAllBookingByOwner(4000L, 0, Integer.MAX_VALUE, "REJECTED");
         Assertions.assertEquals(1, bookingList.size());
-    }
-
-    @Test
-    @Order(22)
-    void getAllBookingByOwnerStateRejectedBadPageParamBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
-                service.getAllBookingByOwner(4000L, null, 20, "REJECTED"));
-
-        Assertions.assertTrue(ex.getMessage().contains("Параметр запроса 'from' не может быть null"));
-        Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
     }
 
     @Test

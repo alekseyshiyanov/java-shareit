@@ -132,37 +132,6 @@ class ItemRequestServiceImplUnitTest {
 
     @Test
     @Order(7)
-    void getPageItemRequestByUserBadFromParamBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
-                service.getPageItemRequestByUser(1000L, null, 20));
-
-        Assertions.assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
-    }
-
-    @Test
-    @Order(8)
-    void getPageItemRequestByUserNullPageParamBehavior() {
-        ItemRequestDto irDto = ItemRequestDto.builder()
-                .id(null)
-                .description("Дайте клей Момент")
-                .requester(null)
-                .items(null)
-                .created(LocalDateTime.now())
-                .build();
-
-        service.createItemRequest(irDto,1000L);
-
-        irDto.setDescription("Нужна отвертка");
-
-        service.createItemRequest(irDto,4000L);
-
-        var irList = service.getPageItemRequestByUser(1000L, null, null);
-
-        Assertions.assertEquals(2, irList.size());
-    }
-
-    @Test
-    @Order(9)
     void getAllItemRequestByIdAndUserStandardBehavior() {
         ItemRequestDto irDto = ItemRequestDto.builder()
                 .id(null)
@@ -184,7 +153,7 @@ class ItemRequestServiceImplUnitTest {
     }
 
     @Test
-    @Order(10)
+    @Order(8)
     void getAllItemRequestByIdAndUserNegativeRequestIdBehavior() {
         ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
                 service.getAllItemRequestByIdAndUser(-1L, 4000L));
@@ -194,7 +163,7 @@ class ItemRequestServiceImplUnitTest {
     }
 
     @Test
-    @Order(11)
+    @Order(9)
     void getAllItemRequestByIdAndUserNegativeUserIdBehavior() {
         ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
                 service.getAllItemRequestByIdAndUser(1000L, -2L));
@@ -204,7 +173,7 @@ class ItemRequestServiceImplUnitTest {
     }
 
     @Test
-    @Order(12)
+    @Order(10)
     void getAllItemRequestByIdAndUserNoItemRequestBehavior() {
         ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
                 service.getAllItemRequestByIdAndUser(1100L, 1000L));

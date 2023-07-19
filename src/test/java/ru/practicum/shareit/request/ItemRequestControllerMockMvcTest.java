@@ -1,12 +1,16 @@
 package ru.practicum.shareit.request;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -96,14 +100,13 @@ class ItemRequestControllerMockMvcTest {
 
         when(service.getAllItemRequestByIdAndUser(any(Long.class), any(Long.class))).thenReturn(testItemRequestDto);
 
-        mvc.perform(
+        var res = mvc.perform(
                         get("/requests/{requestId}", requestId)
                                 .header("X-Sharer-User-Id", userId)
                                 .characterEncoding(StandardCharsets.UTF_8)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
+                ).andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(testItemRequestDto.getId()), Long.class))
                 .andExpect(jsonPath("$.description", is(testItemRequestDto.getDescription())));
     }
