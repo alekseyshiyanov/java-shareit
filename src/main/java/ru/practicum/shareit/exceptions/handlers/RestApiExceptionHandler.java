@@ -36,7 +36,7 @@ public class RestApiExceptionHandler {
     public List<String> handleConstraintViolationException(ConstraintViolationException e) {
         List<String> errorMap = new ArrayList<>();
 
-        for (ConstraintViolation cv : e.getConstraintViolations()) {
+        for (var cv : e.getConstraintViolations()) {
             errorMap.add(cv.getMessage());
         }
 
