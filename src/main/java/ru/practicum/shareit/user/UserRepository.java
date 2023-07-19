@@ -13,12 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> getUserById(Long id);
 
-//    @Modifying(clearAutomatically = true)
-//    @Query("update User u " +
-//            "set u.name  = COALESCE(CAST(:#{#newUser.name}  as string), u.name ), " +
-//                "u.email = COALESCE(CAST(:#{#newUser.email} as string), u.email)  " +
-//            "where  u.id = :#{#newUser.id}")
-//    void updateUser(@Param("newUser") User newUser);
     @Modifying(clearAutomatically = true)
     @Query("update User u " +
             "set u.name  = COALESCE(CAST(:#{#newUser.name} as string), u.name ), " +
