@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.builders.ErrorMessage;
 import ru.practicum.shareit.exceptions.ApiErrorException;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,18 @@ public class RestApiExceptionHandler {
 
         for (FieldError err : e.getBindingResult().getFieldErrors()) {
             errorMap.add(err.getDefaultMessage());
+        }
+
+        return errorMap;
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public List<String> handleConstraintViolationException(ConstraintViolationException e) {
+        List<String> errorMap = new ArrayList<>();
+
+        for (ConstraintViolation cv : e.getConstraintViolations()) {
+            errorMap.add(cv.getMessage());
         }
 
         return errorMap;

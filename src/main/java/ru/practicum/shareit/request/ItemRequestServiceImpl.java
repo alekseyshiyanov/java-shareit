@@ -14,7 +14,6 @@ import ru.practicum.shareit.exceptions.ApiErrorException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.validators.PageParamValidator;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -51,14 +50,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     public List<ItemRequestDto> getPageItemRequestByUser(Long userId, Integer from, Integer size) {
-        if (from == null && size == null) {
-            return getAllItemRequestByUser(userId);
-        }
-
-        if (!PageParamValidator.validate(from, size)) {
-            throw sendErrorMessage(PageParamValidator.httpStatusCode, PageParamValidator.errorMessage);
-        }
-
         checkUserById(userId);
 
         if (itemRequestRepository.existsByRequesterId(userId)) {

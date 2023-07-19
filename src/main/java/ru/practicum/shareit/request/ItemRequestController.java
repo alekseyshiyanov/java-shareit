@@ -2,14 +2,18 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
 
@@ -37,11 +41,11 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDto> getPageItemRequestByUser(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
-                                                         @RequestParam(value = "from", required = false) Integer from,
-                                                         @RequestParam(value = "size", required = false) Integer size) {
-        log.info("Запрос на постраничное получение данных всех запросов вещи пользователем с ID={} со страницы {} по {} запросов на странице",
-                userId, from, size);
+                                                         @Valid @RequestParam(value = "from", required = false, defaultValue = 0+"")
+                                                                @PositiveOrZero(message = "Параметр 'from' должен быть положительным числом") Integer from,
+                                                         @Valid @RequestParam(value = "size", required = false, defaultValue = Integer.MAX_VALUE+"")
+                                                                @Positive(message = "Параметр 'from' должен быть положительным числом больше 0") Integer size) {
+        log.info("Запрос на постраничное получение данных всех запросов вещи пользователем с ID={} со страницы {} по {} запросов на странице", userId, from, size);
         return itemRequestService.getPageItemRequestByUser(userId, from, size);
     }
-
 }

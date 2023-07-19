@@ -11,7 +11,6 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.validators.PageParamValidator;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -126,17 +125,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private Pageable calcPageParam(Integer from, Integer size) {
-        int start = 0;
-
-        if (from == null && size == null) {
-            size = Integer.MAX_VALUE;
-        } else {
-            if (!PageParamValidator.validate(from, size)) {
-                throw sendErrorMessage(PageParamValidator.httpStatusCode, PageParamValidator.errorMessage);
-            }
-            start = from / size;
-        }
-
+        int start = from / size;
         return PageRequest.of(start, size);
     }
 
