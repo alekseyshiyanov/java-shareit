@@ -2,6 +2,8 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ApiErrorException;
@@ -46,13 +48,15 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = getBookingById(bookingId);
 
         if (!getOwnerId(booking).equals(ownerId)) {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Подтвердить бронирование может только владелец");
+            throw sendErrorMessage(HttpStatus.NOT_FOUND,
+                    "Подтвердить бронирование может только владелец");
         }
 
         BookingStatus newStatus = approved ? BookingStatus.APPROVED : BookingStatus.REJECTED;
 
         if (booking.getStatus().equals(newStatus)) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Смена статуса бронирования не требуется");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Смена статуса бронирования не требуется");
         }
 
         bookingRepository.updateStatus(bookingId, newStatus);
@@ -64,59 +68,65 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = getBookingById(bookingId);
 
         if (!(getOwnerId(booking).equals(userId) || getBookerId(booking).equals(userId))) {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Получить данные о бронировании может только бронирующий или владелец вещи");
+            throw sendErrorMessage(HttpStatus.NOT_FOUND,
+                    "Получить данные о бронировании может только бронирующий или владелец вещи");
         }
 
         return BookingMapper.toDto(booking);
     }
 
     @Override
-    public List<BookingDto> getAllBookingByUser(Long userId, String state) {
+    public List<BookingDto> getAllBookingByUser(Long userId, Integer from, Integer size, String state) {
         getUserById(userId);
+
+        Pageable pageParam = calcPageParam(from, size);
 
         switch (checkState(state)) {
             case ALL:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdOrderByStartDesc(userId));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdOrderByStartDesc(userId, pageParam).toList());
             case PAST:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByUserInPast(userId, LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByUserInPast(userId, LocalDateTime.now(), pageParam).toList());
             case CURRENT:
-                return BookingMapper.toDto(bookingRepository.getAllByBooker_IdAndEndIsAfterAndStartBeforeOrderByStartDesc(userId, LocalDateTime.now(), LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllByBooker_IdAndEndIsAfterAndStartBeforeOrderByStartDesc(userId,
+                        LocalDateTime.now(), LocalDateTime.now(), pageParam).toList());
             case FUTURE:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByUserInFuture(userId, LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByUserInFuture(userId, LocalDateTime.now(), pageParam).toList());
             case WAITING:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING, pageParam).toList());
             case REJECTED:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByBooker_IdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED, pageParam).toList());
             default:
                 return BookingMapper.toDto(new ArrayList<>());
         }
     }
 
     @Override
-    public List<BookingDto> getAllBookingByOwner(Long ownerId, String state) {
+    public List<BookingDto> getAllBookingByOwner(Long ownerId, Integer from, Integer size, String state) {
         getUserById(ownerId);
+
+        Pageable pageParam = calcPageParam(from, size);
 
         switch (checkState(state)) {
             case ALL:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwner(ownerId));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwner(ownerId, pageParam).toList());
             case PAST:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInPast(ownerId, LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInPast(ownerId, LocalDateTime.now(), pageParam).toList());
             case CURRENT:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInCurrent(ownerId, LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInCurrent(ownerId, LocalDateTime.now(), pageParam).toList());
             case FUTURE:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInFuture(ownerId, LocalDateTime.now()));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerInFuture(ownerId, LocalDateTime.now(), pageParam).toList());
             case WAITING:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerAndStatus(ownerId, BookingStatus.WAITING));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerAndStatus(ownerId, BookingStatus.WAITING, pageParam).toList());
             case REJECTED:
-                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerAndStatus(ownerId, BookingStatus.REJECTED));
+                return BookingMapper.toDto(bookingRepository.getAllBookingByOwnerAndStatus(ownerId, BookingStatus.REJECTED, pageParam).toList());
             default:
                 return BookingMapper.toDto(new ArrayList<>());
         }
     }
 
-    private void sendErrorMessage(HttpStatus httpStatus, String msg) {
-        log.error(msg);
-        throw new ApiErrorException(httpStatus, msg);
+    private Pageable calcPageParam(Integer from, Integer size) {
+        int start = from / size;
+        return PageRequest.of(start, size);
     }
 
     private BookingState checkState(String state) {
@@ -125,7 +135,8 @@ public class BookingServiceImpl implements BookingService {
         try {
             bookingState = BookingState.valueOf(state);
         } catch (IllegalArgumentException e) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Unknown state: UNSUPPORTED_STATUS");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Unknown state: UNSUPPORTED_STATUS");
         }
 
         return bookingState;
@@ -140,43 +151,49 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private Booking getBookingById(Long bookingId) {
-        return bookingRepository.getBookingById(bookingId).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Бронирование с ID = " + bookingId + " не найдено в базе данных");
-            return null;
-        });
+        return bookingRepository.getBookingById(bookingId).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.NOT_FOUND,
+                        "Бронирование с ID = " + bookingId + " не найдено в базе данных"));
     }
 
     private Item getItemById(Long itemId) {
-        Item item = itemRepository.getItemById(itemId).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Предмет с ID = " + itemId + " не найден в базе данных");
-            return null;
-        });
+        Item item = itemRepository.getItemById(itemId).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.NOT_FOUND,
+                        "Предмет с ID = " + itemId + " не найден в базе данных"));
 
         if (!item.getAvailable()) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Предмет с ID = " + itemId + " не доступен для бронирования");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Предмет с ID = " + itemId + " не доступен для бронирования");
         }
 
         return item;
     }
 
     private User getUserById(Long bookerId) {
-        return userRepository.getUserById(bookerId).orElseThrow(() -> {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Пользователь с ID = " + bookerId + " не найден в базе данных");
-            return null;
-        });
+        return userRepository.getUserById(bookerId).orElseThrow(() ->
+                sendErrorMessage(HttpStatus.NOT_FOUND,
+                        "Пользователь с ID = " + bookerId + " не найден в базе данных"));
     }
 
     private void validateBookingTime(Booking booking) {
         if (booking.getStart().isAfter(booking.getEnd())) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Время начала бронирования не может быть после времени окончания бронирования");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Время начала бронирования не может быть после времени окончания бронирования");
         }
 
         if (booking.getStart().isEqual(booking.getEnd())) {
-            sendErrorMessage(HttpStatus.BAD_REQUEST, "Время начала бронирования не может быть равно времени окончания бронирования");
+            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
+                    "Время начала бронирования не может быть равно времени окончания бронирования");
         }
 
         if (getOwnerId(booking).equals(getBookerId(booking))) {
-            sendErrorMessage(HttpStatus.NOT_FOUND, "Нельзя забронировать свой предмет");
+            throw sendErrorMessage(HttpStatus.NOT_FOUND,
+                    "Нельзя забронировать свой предмет");
         }
+    }
+
+    private ApiErrorException sendErrorMessage(HttpStatus httpStatus, String msg) {
+        log.error(msg);
+        return new ApiErrorException(httpStatus, msg);
     }
 }
