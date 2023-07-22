@@ -103,9 +103,8 @@ class ItemServiceImplUnitTest {
     @Test
     @Order(7)
     void getItemNoItemBehavior() {
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.getItem(999L, 1000L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.getItem(999L, 1000L));
 
         Assertions.assertTrue(ex.getMessage().contains("не найден в базе данных"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
@@ -143,9 +142,8 @@ class ItemServiceImplUnitTest {
                 .requestId(null)
                 .build();
 
-        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () -> {
-            service.createItem(newItemDto, 6001L);
-        });
+        ApiErrorException ex = Assertions.assertThrows(ApiErrorException.class, () ->
+                service.createItem(newItemDto, 6001L));
 
         Assertions.assertTrue(ex.getMessage().contains("не найден в базе данных"));
         Assertions.assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
