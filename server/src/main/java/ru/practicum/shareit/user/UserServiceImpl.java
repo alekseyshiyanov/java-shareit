@@ -35,8 +35,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, Long userId) {
-        validateUserId(userId);
-
         User userForUpdate = UserMapper.fromDto(userDto);
         userForUpdate.setId(userId);
 
@@ -46,20 +44,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(Long userId) {
-        validateUserId(userId);
-
         User user = userRepository.getUserById(userId).orElseThrow(() ->
                 sendErrorMessage(HttpStatus.NOT_FOUND,
                         "Пользователь с ID = " + userId + " не найден в базе данных"));
 
         return UserMapper.toDto(user);
-    }
-
-    private void validateUserId(Long uid) {
-        if (uid <= 0L) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
-                    "Ошибка проверки userID. ID должен быть положительным числом больше 0");
-        }
     }
 
     private ApiErrorException sendErrorMessage(HttpStatus httpStatus, String msg) {

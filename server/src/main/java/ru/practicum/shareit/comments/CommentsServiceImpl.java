@@ -20,10 +20,6 @@ public class CommentsServiceImpl implements CommentsService {
     private final BookingRepository bookingRepository;
 
     public CommentsDto createComment(Long itemId, Long authorId, CommentsDto commentsDto) {
-        if (commentsDto == null || commentsDto.getText() == null || commentsDto.getText().isBlank()) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "Комментарий не может быть пустым или равным null");
-        }
-
         Booking booking = bookingRepository.getTopBookingByItem_IdAndBooker_IdAndEndBeforeOrderByEndDesc(itemId, authorId, LocalDateTime.now()).orElseThrow(() ->
                 sendErrorMessage(HttpStatus.BAD_REQUEST,
                         "Бронирование с ItemID = " + itemId + " и UserID = " + authorId + " не найдено в базе данных или еще не завершено"));

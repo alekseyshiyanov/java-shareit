@@ -5,9 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
@@ -20,7 +17,7 @@ public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
     @PostMapping
-    public ItemRequestDto createItemRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
+    public ItemRequestDto createItemRequest(@RequestBody ItemRequestDto itemRequestDto,
                                             @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId) {
         log.info("Запрос на создание новой записи");
         return itemRequestService.createItemRequest(itemRequestDto, userId);
@@ -41,10 +38,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDto> getPageItemRequestByUser(@RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
-                                                         @Valid @RequestParam(value = "from", required = false, defaultValue = 0 + "")
-                                                                @PositiveOrZero(message = "Параметр 'from' должен быть положительным числом") Integer from,
-                                                         @Valid @RequestParam(value = "size", required = false, defaultValue = Integer.MAX_VALUE + "")
-                                                                @Positive(message = "Параметр 'from' должен быть положительным числом больше 0") Integer size) {
+                                                         @RequestParam(value = "from", required = false, defaultValue = 0 + "") Integer from,
+                                                         @RequestParam(value = "size", required = false, defaultValue = Integer.MAX_VALUE + "") Integer size) {
         log.info("Запрос на постраничное получение данных всех запросов вещи пользователем с ID={} со страницы {} по {} запросов на странице", userId, from, size);
         return itemRequestService.getPageItemRequestByUser(userId, from, size);
     }

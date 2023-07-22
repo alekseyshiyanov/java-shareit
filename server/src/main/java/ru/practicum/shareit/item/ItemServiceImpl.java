@@ -30,7 +30,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto createItem(ItemDto itemDto, Long ownerId) {
         Item newItem = ItemMapper.fromDto(itemDto);
-        validateItem(newItem);
 
         User ownerUser = getOwnerById(ownerId);
 
@@ -41,8 +40,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public OutItemDto getItem(Long itemId, Long userId) {
-        validateItemId(itemId);
-
         Item item = getItemById(itemId);
 
         var lastBooking = itemRepository.getLastBooking(itemId, userId, LocalDateTime.now(),
@@ -61,8 +58,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateItem(ItemDto itemDto, Long itemId, Long ownerId) {
-        validateItemId(itemId);
-
         Item itemForUpdate = ItemMapper.fromDto(itemDto);
         itemForUpdate.setId(itemId);
         itemForUpdate.setUser(getOwnerById(ownerId));
@@ -74,8 +69,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<OutItemDto> getItemsByOwnerId(Long ownerId) {
-        validateOwnerId(ownerId);
-
         var itemList = itemRepository.getItemsByUser_IdOrderByIdAsc(ownerId);
 
         List<OutItemDto> itemDtoList = new ArrayList<>();
@@ -98,8 +91,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getSearchedItems(String searchString) {
-        validateSearchString(searchString);
-
         if (searchString.isEmpty()) {
             return Collections.emptyList();
         }
@@ -107,45 +98,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toDto(itemRepository.searchItemsByDescriptionOrName(searchString.toLowerCase()));
     }
 
-    private void validateSearchString(String searchString) {
-        if (searchString == null) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "Строка поиска не может быть null");
-        }
-    }
-
-    private void validateOwnerId(Long ownerId) {
-        if (ownerId == null) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "ID владельца не может быть null");
-        }
-    }
-
-    private void validateItemId(Long itemId) {
-        if (itemId == null) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "ID предмета не должен быть null");
-        }
-
-        if (itemId < 0L) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "ID предмета должен быть положительным числом");
-        }
-    }
-
-    private void validateItem(Item item) {
-        if (item.getAvailable() == null) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "Доступность предмета не может быть null");
-        }
-
-        if ((item.getDescription() == null) || (item.getDescription().isBlank())) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "Описание предмета предмета не может быть пустым или null");
-        }
-
-        if ((item.getName() == null) || (item.getName().isBlank())) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST, "Название предмета предмета не может быть пустым или null");
-        }
-    }
-
     private User getOwnerById(Long ownerId) {
-        validateOwnerId(ownerId);
-
         return userRepository.getUserById(ownerId).orElseThrow(() ->
                 sendErrorMessage(HttpStatus.NOT_FOUND,
                         "Пользователь с ID = " + ownerId + " не найден в базе данных"));

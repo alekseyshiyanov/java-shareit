@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comments.CommentsDto;
 import ru.practicum.shareit.comments.CommentsService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -18,7 +17,7 @@ public class ItemController {
     private final CommentsService commentsService;
 
     @PostMapping
-    public ItemDto createItem(@Valid @RequestBody ItemDto itemDto,
+    public ItemDto createItem(@RequestBody ItemDto itemDto,
                               @RequestHeader(value = "X-Sharer-User-Id", required = false) Long ownerId) {
         log.info("Запрос на создание новой записи");
         return itemService.createItem(itemDto, ownerId);

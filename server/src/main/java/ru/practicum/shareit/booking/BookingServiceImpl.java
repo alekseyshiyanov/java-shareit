@@ -34,7 +34,10 @@ public class BookingServiceImpl implements BookingService {
         newBooking.setItem(getItemById(bookingDto.getItemId()));
         newBooking.setBooker(getUserById(bookerId));
 
-        validateBookingTime(newBooking);
+        if (getOwnerId(newBooking).equals(getBookerId(newBooking))) {
+            throw sendErrorMessage(HttpStatus.NOT_FOUND,
+                    "Нельзя забронировать свой предмет");
+        }
 
         newBooking.setStatus(BookingStatus.WAITING);
 
@@ -173,23 +176,6 @@ public class BookingServiceImpl implements BookingService {
         return userRepository.getUserById(bookerId).orElseThrow(() ->
                 sendErrorMessage(HttpStatus.NOT_FOUND,
                         "Пользователь с ID = " + bookerId + " не найден в базе данных"));
-    }
-
-    private void validateBookingTime(Booking booking) {
-        if (booking.getStart().isAfter(booking.getEnd())) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
-                    "Время начала бронирования не может быть после времени окончания бронирования");
-        }
-
-        if (booking.getStart().isEqual(booking.getEnd())) {
-            throw sendErrorMessage(HttpStatus.BAD_REQUEST,
-                    "Время начала бронирования не может быть равно времени окончания бронирования");
-        }
-
-        if (getOwnerId(booking).equals(getBookerId(booking))) {
-            throw sendErrorMessage(HttpStatus.NOT_FOUND,
-                    "Нельзя забронировать свой предмет");
-        }
     }
 
     private ApiErrorException sendErrorMessage(HttpStatus httpStatus, String msg) {
