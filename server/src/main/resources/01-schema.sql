@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS public.users (
-                                             user_id integer auto_increment    NOT NULL,
+                                             user_id bigserial NOT NULL,
                                              name varchar(255) NOT NULL,
                                              email varchar(255) NOT NULL,
                                              CONSTRAINT User_pkey PRIMARY KEY (user_id),
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS public.users (
 );
 
 CREATE TABLE IF NOT EXISTS public.item_request (
-                                                  item_request_id integer auto_increment NOT NULL,
+                                                  item_request_id bigserial NOT NULL,
                                                   description varchar(255) NOT NULL,
                                                   requester_id bigint NOT NULL,
                                                   request_created timestamp without time zone NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS public.item_request (
 );
 
 CREATE TABLE IF NOT EXISTS public.item (
-                                           item_id integer auto_increment NOT NULL,
+                                           item_id bigserial NOT NULL,
                                            name varchar(255) NOT NULL,
                                            description varchar(255) NOT NULL,
                                            available boolean NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS public.item (
 );
 
 CREATE TABLE IF NOT EXISTS public.booking (
-                                                booking_id integer auto_increment NOT NULL,
+                                                booking_id bigserial NOT NULL,
                                                 start_time timestamp without time zone NOT NULL,
                                                 end_time timestamp without time zone,
                                                 item_id bigint NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS public.booking (
 );
 
 CREATE TABLE IF NOT EXISTS public.comments (
-                                                comments_id integer auto_increment NOT NULL,
+                                                comments_id bigserial NOT NULL,
                                                 text varchar(255) NOT NULL,
                                                 item_id bigint NOT NULL,
                                                 author_id bigint NOT NULL,
