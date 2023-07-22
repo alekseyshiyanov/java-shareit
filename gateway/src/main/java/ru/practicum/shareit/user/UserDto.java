@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.labels.Create;
+import ru.practicum.shareit.labels.Update;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
