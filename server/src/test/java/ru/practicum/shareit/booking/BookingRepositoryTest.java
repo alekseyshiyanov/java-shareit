@@ -132,8 +132,8 @@ class BookingRepositoryTest {
         var allBookings = bookingRepository.getAllBookingByBooker_IdOrderByStartDesc(1000L, PageRequest.of(0, Integer.MAX_VALUE)).toList();
         Assertions.assertEquals(5, allBookings.size());
 
-        var allBookingsInCurrent = bookingRepository.getAllByBooker_IdAndEndIsAfterAndStartBeforeOrderByStartDesc(1000L,
-                LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(0, Integer.MAX_VALUE)).toList();
+        var allBookingsInCurrent = bookingRepository.getAllBookingByBookerInCurrent(1000L,
+                LocalDateTime.now(), PageRequest.of(0, Integer.MAX_VALUE)).toList();
 
         Assertions.assertEquals(1, allBookingsInCurrent.size());
     }
