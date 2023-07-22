@@ -70,9 +70,8 @@ public class BookingController {
 	}
 
 	private BookingState checkState(String state) {
-		BookingState bookingState = BookingState.from(state).orElseThrow(() ->
+		return BookingState.from(state).orElseThrow(() ->
 				new ApiErrorException(HttpStatus.BAD_REQUEST, "Unknown state: UNSUPPORTED_STATUS"));
-		return bookingState;
 	}
 
 	private void validateBookingTime(InputBookingDto booking) {
