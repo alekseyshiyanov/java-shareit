@@ -90,8 +90,6 @@ public class BookingServiceImpl implements BookingService {
             case PAST:
                 return BookingMapper.toDto(bookingRepository.getAllBookingByUserInPast(userId, LocalDateTime.now(), pageParam).toList());
             case CURRENT:
-//                return BookingMapper.toDto(bookingRepository.getAllByBooker_IdAndEndIsAfterAndStartBeforeOrderByStartDesc(userId,
-//                        LocalDateTime.now(), LocalDateTime.now(), pageParam).toList());
                 return BookingMapper.toDto(bookingRepository.getAllBookingByBookerInCurrent(userId, LocalDateTime.now(), pageParam).toList());
             case FUTURE:
                 return BookingMapper.toDto(bookingRepository.getAllBookingByUserInFuture(userId, LocalDateTime.now(), pageParam).toList());

@@ -35,11 +35,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                               @Param("current") LocalDateTime current,
                                               Pageable pageable);
 
-    Page<Booking> getAllByBooker_IdAndEndIsAfterAndStartBeforeOrderByStartDesc(Long bookerId,
-                                                                               LocalDateTime current1,
-                                                                               LocalDateTime current2,
-                                                                               Pageable pageable);
-
     @Query("select b " +
             "from Booking b " +
             "where b.booker.id = :bookerId " +
