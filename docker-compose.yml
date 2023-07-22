@@ -13,7 +13,7 @@ services:
       - server
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
-      - TZ=Europe/Moscow
+#      - TZ=Europe/Moscow
 
   server:
     build:
@@ -28,7 +28,7 @@ services:
       - db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
-      - TZ=Europe/Moscow
+#      - TZ=Europe/Moscow
 
   db:
     build:
@@ -44,5 +44,5 @@ services:
       - POSTGRES_PASSWORD=root
       - DB_HOST=db
       - DB_PORT=5432
-      - TZ=Europe/Moscow
+#      - TZ=Europe/Moscow
 
