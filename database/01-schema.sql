@@ -1,5 +1,3 @@
-CREATE DATABASE shareit;
-\c shareit;
 CREATE TABLE IF NOT EXISTS public.users (
                                              user_id bigserial NOT NULL,
                                              name varchar(255) NOT NULL,
